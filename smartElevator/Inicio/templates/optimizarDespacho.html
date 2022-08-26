@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Despachos por planta </h2>
+<div class="col-md-2">
+    <label for="despacho" class="form-label">Despacho</label>
+    <input type="number" step="1" value="{{despacho}}" class="form-control" name="despacho" readonly>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Planta</th>
+                <th scope="col">Limite inferior</th>
+                <th scope="col">Restricción</th>
+                <th scope="col">Limite superior</th>
+                <th scope="col">Despacho</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dato in datos %}
+                <tr>
+                    <td>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <label class="form-check-label" for="{{dato.nombre}}">
+                                    {{dato.nombre}}
+                                </label>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-md-12">
+                            <input type="number" step="0.0001" value="{{dato.linferior}}" class="form-control" name="limiteInferior" readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-md-12">
+                            <input type="number" step="0.0001" value="{{dato.res}}" class="form-control" name="restriccion" readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-md-12">
+                            <input type="number" step="0.0001" value="{{dato.lsuperior}}" class="form-control" name="limiteSuperior" readonly>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col-md-12">
+                            <input type="number" step="0.0001" value="{{dato.desp}}" class="form-control" name="despacho" readonly>
+                        </div>
+                    </td>                     
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

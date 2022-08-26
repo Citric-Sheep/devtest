@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- ======================================================== -->
+<!-- Inicio contenedor: Encabezado encima de tabla -->
+<!-- ======================================================== -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Data</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <!-- Botón para agragar contenido a la tabla-->
+            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAddData">Add</button>
+        </div>
+    </div>
+</div>
+<!-- ======================================================== -->
+<!-- Fin contenedor: Encabezado encima de tabla -->
+<!-- ======================================================== -->
+
+<!-- ======================================================== -->
+<!-- Inicio contenedor: table responsive -->
+<!-- ======================================================== -->
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Demand floor</th>
+                <th scope="col">End floor</th>
+                <th scope="col">people</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in showData %}
+                <tr>
+                    <td class="{{data.id}}">{{data.id}}</td>
+                    <td class="{{data.id}}">{{data.date|date:"Y/m/d"}}</td>
+                    <td class="{{data.id}}">{{data.time}}</td>
+                    <td class="{{data.id}}">{{data.demandFloor}}</td>
+                    <td class="{{data.id}}">{{data.endFloor}}</td>
+                    <td class="{{data.id}}">{{data.people}}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                            <button value="{{data.id}}" onclick="editData(this.value)" type="button" class="btn btn-sm btn-outline-primary">Edit</button>
+                            <button value="{{data.id}}" onclick="deleteData(this.value)" type="button" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<!-- ======================================================== -->
+<!-- Fin contenedor: table-responsive -->
+<!-- ======================================================== -->
+
+<!-- ======================================================== -->
+<!-- Inicio contenedor: Modal: Agregar -->
+<!-- ======================================================== -->
+<div class="modal fade" id="modalAddData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Add data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <form class="row g-3" action="{% url 'addData' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <label for="addDate" class="form-label">Date</label>
+                        <input type="date" placeholder="dd-mm-aaaa" class="form-control" name="addDate">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="addTime" class="form-label">Time</label>
+                        <input type="time" placeholder="hh:mm" class="form-control" name="addTime">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="addDemandFloor" class="form-label">Demand Floor</label>
+                        <input type="number" step="1" placeholder="1" class="form-control" name="addDemandFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="addEndFloor" class="form-label">End Floor</label>
+                        <input type="number" step="1" placeholder="1" class="form-control" name="addEndFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="addPeople" class="form-label">People</label>
+                        <input type="number" step="1" placeholder="1" class="form-control" name="addPeople">
+                    </div>
+
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ======================================================== -->
+<!-- Fin contenedor: Modal: Agregar -->
+<!-- ======================================================== -->
+
+<!-- ======================================================== -->
+<!-- Inicio contenedor: Modal: Editar -->
+<!-- ======================================================== -->
+<div class="modal fade" id="modalEditData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Edit data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <form class="row g-3" action="{% url 'editData' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <label for="id" class="form-label">Id</label>
+                        <input id="editId" type="number" class="form-control" name="id" readonly>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label for="editDate" class="form-label">Date</label>
+                        <input id="editDate" type="date" class="form-control" name="editDate">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="editTime" class="form-label">Time</label>
+                        <input id="editTime" type="time" class="form-control" name="editTime">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="editDemandFloor" class="form-label">Demand Floor</label>
+                        <input id="leditDemandFloor" type="number" step="1" class="form-control" name="editDemandFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="editEndFloor" class="form-label">Edit Floor</label>
+                        <input id="editEndFloor" type="number" step="1" class="form-control" name="editEndFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="editPeople" class="form-label">People</label>
+                        <input id="editPeople" type="number" step="1" class="form-control" name="editPeople">
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ======================================================== -->
+<!-- Fin contenedor: Modal: Editar -->
+<!-- ======================================================== -->
+
+<!-- ======================================================== -->
+<!-- Inicio contenedor: Modal: Eliminar -->
+<!-- ======================================================== -->
+<div class="modal fade" id="modalDeleteData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Delete data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <form class="row g-3" action="{% url 'deleteData' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <label for="id" class="form-label">Id</label>
+                        <input id="deleteId" type="number" class="form-control" name="id" readonly>
+                    </div>
+                    
+                    <div class="col-md-12">
+                        <label for="deleteDate" class="form-label">Date</label>
+                        <input id="deleteDate" type="date" class="form-control" name="deleteDate">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="deleteTime" class="form-label">Time</label>
+                        <input id="deleteTime" type="time" class="form-control" name="deleteTime">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="deleteDemandFloor" class="form-label">Demand Floor</label>
+                        <input id="deleteDemandFloor" type="number" step="1" class="form-control" name="deleteDemandFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="deleteEndFloor" class="form-label">Edit Floor</label>
+                        <input id="deleteEndFloor" type="number" step="1" class="form-control" name="deleteEndFloor">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="deletePeople" class="form-label">People</label>
+                        <input id="deletePeople" type="number" step="1" class="form-control" name="deletePeople">
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ======================================================== -->
+<!-- Fin contenedor: Modal: Eliminar -->
+<!-- ======================================================== -->
+
+{% endblock %}
