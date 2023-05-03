@@ -11,8 +11,8 @@ from rest_framework import status
 from elevator_api.elevator.models import Elevator
 
 
-class CallTestCase(TestCase):
-    """Calls test case."""
+class DemandTestCase(TestCase):
+    """Demands test case."""
 
     def setUp(self):
         """Test case setup."""
@@ -26,7 +26,7 @@ class CallTestCase(TestCase):
 
         self.elevator_data = elevator_response.data
 
-        call_data = {
+        demand_data = {
             "id": 1,
             "moment": "2023-04-30T18:06:00Z",
             "source_floor": 5,
@@ -34,26 +34,26 @@ class CallTestCase(TestCase):
             "rest_floor": 0,
             "elevator": self.elevator_data['id']
         }
-        call_response = self.client.post(
-            '/elevators/calls/', call_data, format='json')
+        demand_response = self.client.post(
+            '/elevators/demands/', demand_data, format='json')
 
-        self.call_response_data = call_response.data
+        self.demand_response_data = demand_response.data
 
-    def test_create_call(self):
-        """Test to validate the operation of call creation."""
+    def test_create_demand(self):
+        """Test to validate the operation of demand creation."""
 
-        call_data = {
+        demand_data = {
             "moment": "2023-05-01T18:06:00Z",
             "source_floor": 5,
             "destination_floor": 13,
             "rest_floor": 7,
             "elevator": self.elevator_data['id']
         }
-        call_response = self.client.post(
-            '/elevators/calls/', call_data, format='json')
+        demand_response = self.client.post(
+            '/elevators/demands/', demand_data, format='json')
 
-        result = json.loads(call_response.content)
-        self.assertEqual(call_response.status_code, status.HTTP_201_CREATED)
+        result = json.loads(demand_response.content)
+        self.assertEqual(demand_response.status_code, status.HTTP_201_CREATED)
 
         content = result
         self.assertIn('id', content)
@@ -63,10 +63,10 @@ class CallTestCase(TestCase):
         self.assertIn('rest_floor', content)
         self.assertIn('elevator', content)
 
-    def test_get_by_list_call(self):
-        """Test to validate the operation of call list."""
+    def test_get_by_list_demand(self):
+        """Test to validate the operation of demand list."""
 
-        response = self.client.get('/elevators/calls/')
+        response = self.client.get('/elevators/demands/')
 
         result = json.loads(response.content)
 
@@ -81,10 +81,10 @@ class CallTestCase(TestCase):
             self.assertIn('rest_floor', content)
             self.assertIn('elevator', content)
 
-    def test_get_call(self):
-        """Test to validate the operation of call get."""
+    def test_get_demand(self):
+        """Test to validate the operation of demand get."""
 
-        response = self.client.get(f'/elevators/calls/{self.call_response_data["id"]}/')
+        response = self.client.get(f'/elevators/demands/{self.demand_response_data["id"]}/')
 
         content = json.loads(response.content)
 
@@ -102,10 +102,10 @@ class CallTestCase(TestCase):
         self.assertIsInstance(content['elevator'], str)
         self.assertIsInstance(content['max_floors'], int)
 
-    def test_update_call(self):
-        """Test to validate the operation of call update."""
+    def test_update_demand(self):
+        """Test to validate the operation of demand update."""
 
-        call_update_data = {
+        demand_update_data = {
             "moment": "2023-05-02T18:06:00Z",
             "source_floor": 10,
             "destination_floor": 13,
@@ -114,8 +114,8 @@ class CallTestCase(TestCase):
         }
 
         response = self.client.put(
-            f'/elevators/calls/{self.call_response_data["id"]}/',
-            call_update_data,
+            f'/elevators/demands/{self.demand_response_data["id"]}/',
+            demand_update_data,
             format='json'
         )
 
@@ -130,14 +130,14 @@ class CallTestCase(TestCase):
         self.assertIn('elevator', content)
 
     def test_delete_elevator(self):
-        """Test to validate the operation of call delete."""
+        """Test to validate the operation of demand delete."""
 
         response = self.client.delete(
-            f'/elevators/calls/{self.call_response_data["id"]}/',
+            f'/elevators/demands/{self.demand_response_data["id"]}/',
             format='json'
         )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        elevator_exists = Elevator.objects.filter(pk=self.call_response_data["id"])
+        elevator_exists = Elevator.objects.filter(pk=self.demand_response_data["id"])
         self.assertFalse(elevator_exists)

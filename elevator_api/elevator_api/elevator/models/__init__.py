@@ -1,2 +1,2 @@
-from .calls import Call
+from .demands import Demand
 from .elevators import Elevator

@@ -22,9 +22,9 @@ docker-compose up
 ```
 
 
-### Upload elevator call data
+### Upload elevator demand data
 
-To load the elevator call data contained in output.csv run the following command:
+To load the elevator demand data contained in output.csv run the following command:
 
     $ python manage.py import_data
   

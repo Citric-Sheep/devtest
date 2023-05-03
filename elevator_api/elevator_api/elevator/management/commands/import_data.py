@@ -2,18 +2,18 @@ import csv
 from datetime import datetime
 from django.core.management.base import BaseCommand
 
-from elevator_api.elevator.models import Call, Elevator
+from elevator_api.elevator.models import Demand, Elevator
 
 
 class Command(BaseCommand):
-    """A Django custom command to save elevator call data from a CSV file to a PostgreSQL database."""
+    """A Django custom command to save elevator demand data from a CSV file to a PostgreSQL database."""
 
     help = 'Comand to save the elevator data in PostgreSQL '
 
     def handle(self, *args, **options):
         """
             The main method that handles the command. Opens a CSV file, reads its contents, and saves the data
-            to the PostgreSQL database using the Elevator and Call models.
+            to the PostgreSQL database using the Elevator and Demand models.
         """
 
         csv_file = 'output.csv'
@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 destination = int(row['destination'])
                 current = int(row['current'])
 
-                call = Call(elevator=elevator_instance, moment=time, source_floor=origin,
+                demand = Demand(elevator=elevator_instance, moment=time, source_floor=origin,
                             destination_floor=destination, rest_floor=current)
-                call.save()
+                demand.save()
         self.stdout.write(self.style.SUCCESS('The data was saved successfully'))

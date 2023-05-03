@@ -1,4 +1,4 @@
-"""Call model."""
+"""Demand model."""
 
 # Django
 from django.db import models
@@ -9,8 +9,8 @@ validators = {'validators': [MinValueValidator(0), MaxValueValidator(163)],
               'blank': False}
 
 
-class Call(models.Model):
-    """A Django model for representing an elevator call."""
+class Demand(models.Model):
+    """A Django model for representing an elevator demand."""
 
     moment = models.DateTimeField()
     source_floor = models.IntegerField(**validators)

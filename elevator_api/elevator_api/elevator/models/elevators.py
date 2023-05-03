@@ -1,4 +1,4 @@
-"""Call model."""
+"""Elevator model."""
 
 # Django
 from django.core.validators import MinValueValidator, MaxValueValidator

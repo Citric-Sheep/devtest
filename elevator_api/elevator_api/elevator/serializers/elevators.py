@@ -9,7 +9,7 @@ class ElevatorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CallElevatorSerializer(serializers.ModelSerializer):
+class DemandElevatorSerializer(serializers.ModelSerializer):
     """Serializer for displaying relevant elevator data"""
 
     class Meta:

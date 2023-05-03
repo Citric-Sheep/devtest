@@ -7,7 +7,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 # Views
-from .views import elevators, calls
+from .views import elevators, demands
 
 router = DefaultRouter()
 router.register(
@@ -17,9 +17,9 @@ router.register(
 )
 
 router.register(
-    'calls',
-    calls.CallViewSet,
-    basename='calls'
+    'demands',
+    demands.DemandViewSet,
+    basename='demands'
 )
 
 
