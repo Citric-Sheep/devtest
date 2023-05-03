@@ -16,6 +16,8 @@ urlpatterns = [
     path("users/", include("elevator_api.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path('elevators/', include(('elevator_api.elevator.urls', 'elevator'), namespace='elevators')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
@@ -31,6 +33,11 @@ urlpatterns += [
         name="api-docs",
     ),
 ]
+
+
+
+
+
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
