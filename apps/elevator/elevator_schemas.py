@@ -20,4 +20,3 @@ class ElevatorStatus(BaseModel):
     elevator_id: int
     current_floor: int
     destination_floor: int
-
