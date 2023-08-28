@@ -29,3 +29,7 @@ elevator_router = APIRouter(tags=['Elevator'])
 # Elevator  #
 ##############
 
+
+@elevator_router.post('/elevator/demand')
+async def elevator_demand():
+    return {'Hola mundo :D': 'Chao Mundo D:'}

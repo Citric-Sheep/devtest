@@ -88,14 +88,12 @@ class ElevatorStatus(BaseModel):
     elevator_id = mapped_column(ForeignKey("elevators.elevator_id",
                                            ondelete="SET NULL"),
                                 nullable=True)
-    elevator_status_current = mapped_column(ForeignKey("catalog_order_movements.catalog_order_movements_code"),
-                                            nullable=False)
+    elevator_status_movement = mapped_column(ForeignKey("catalog_order_movements.catalog_order_movements_code"),
+                                             nullable=False)
     elevator_status_current_floor = mapped_column(Integer,
                                                   nullable=False)
     elevator_status_final_floor = mapped_column(Integer,
                                                 nullable=True)
-    elevator_status_state = mapped_column(Boolean,
-                                          nullable=False)
     elevator_status_created_on = mapped_column(DateTime(timezone=True),
                                                server_default=func.now(),
                                                nullable=False)
