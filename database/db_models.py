@@ -29,7 +29,7 @@ class Elevators(BaseModel):
                                      nullable=False)
     elevators_rooms = mapped_column(Integer,
                                     nullable=False)
-    elevators_state = mapped_column(ForeignKey("catalog_elevator_states.catalog_elevator_states_code"),
+    elevators_state = mapped_column(ForeignKey("catalog_elevator_states.code"),
                                     nullable=False)
     elevators_created_on = mapped_column(DateTime(timezone=True),
                                          server_default=func.now(),
@@ -53,17 +53,17 @@ class ElevatorOrders(BaseModel):
     elevator_id = mapped_column(ForeignKey("elevators.elevator_id",
                                 ondelete="SET NULL"),
                                 nullable=True)
-    elevator_order_demand_category = mapped_column(ForeignKey("catalog_order_categories.catalog_order_categories_code"),
+    elevator_order_demand_category = mapped_column(ForeignKey("catalog_order_categories.code"),
                                                    nullable=False)
-    elevator_order_demand_type = mapped_column(ForeignKey("catalog_order_types.catalog_order_types_code"),
+    elevator_order_demand_type = mapped_column(ForeignKey("catalog_order_types.code"),
                                                nullable=True)
     elevator_order_demand_floor = mapped_column(Integer,
                                                 nullable=True)
     elevator_order_current_floor = mapped_column(Integer,
                                                  nullable=False)
-    elevator_order_movement_status = mapped_column(ForeignKey("catalog_order_movements.catalog_order_movements_code"),
+    elevator_order_movement_status = mapped_column(ForeignKey("catalog_order_movements.code"),
                                                    nullable=False)
-    elevator_order_request_status = mapped_column(ForeignKey("catalog_order_status.catalog_order_status_code"),
+    elevator_order_request_status = mapped_column(ForeignKey("catalog_order_status.code"),
                                                   nullable=False)
     elevator_order_created_on = mapped_column(DateTime(timezone=True),
                                               server_default=func.now(),
@@ -88,7 +88,7 @@ class ElevatorStatus(BaseModel):
     elevator_id = mapped_column(ForeignKey("elevators.elevator_id",
                                            ondelete="SET NULL"),
                                 nullable=True)
-    elevator_status_movement = mapped_column(ForeignKey("catalog_order_movements.catalog_order_movements_code"),
+    elevator_status_movement = mapped_column(ForeignKey("catalog_order_movements.code"),
                                              nullable=False)
     elevator_status_current_floor = mapped_column(Integer,
                                                   nullable=False)
@@ -99,108 +99,109 @@ class ElevatorStatus(BaseModel):
                                                nullable=False)
 
     elevator_status_elevator: Mapped["Elevators"] = relationship(back_populates="elevator_elevator_status")
+    elevator_status_catalog_order_movements: Mapped["CatalogOrderMovements"] = relationship()
 
 
 class CatalogElevatorStates(BaseModel):
     __tablename__ = "catalog_elevator_states"
-    catalog_elevator_states_id = mapped_column(Integer,
-                                               primary_key=True,
-                                               unique=True,
-                                               nullable=False)
-    catalog_elevator_states_code = mapped_column(Integer,
-                                                 unique=True,
-                                                 nullable=False)
-    catalog_elevator_states_name = mapped_column(String(255),
-                                                 nullable=False)
-    catalog_elevator_states_state = mapped_column(Boolean,
-                                                  nullable=False)
-    catalog_elevator_states_created_on = mapped_column(DateTime(timezone=True),
-                                                       server_default=func.now(),
-                                                       nullable=False)
-    catalog_elevator_states_update_on = mapped_column(DateTime(timezone=True),
-                                                      onupdate=func.now(),
-                                                      nullable=True)
+    id = mapped_column(Integer,
+                       primary_key=True,
+                       unique=True,
+                       nullable=False)
+    code = mapped_column(Integer,
+                         unique=True,
+                         nullable=False)
+    description = mapped_column(String(255),
+                                nullable=False)
+    state = mapped_column(Boolean,
+                          nullable=False)
+    created_on = mapped_column(DateTime(timezone=True),
+                               server_default=func.now(),
+                               nullable=False)
+    updated_on = mapped_column(DateTime(timezone=True),
+                               onupdate=func.now(),
+                               nullable=True)
 
 
 class CatalogOrderCategories(BaseModel):
     __tablename__ = "catalog_order_categories"
-    catalog_order_categories_id = mapped_column(Integer,
-                                                primary_key=True,
-                                                unique=True,
-                                                nullable=False)
-    catalog_order_categories_code = mapped_column(Integer,
-                                                  unique=True,
-                                                  nullable=False)
-    catalog_order_categories_name = mapped_column(String(255),
-                                                  nullable=False)
-    catalog_order_categories_state = mapped_column(Boolean,
-                                                   nullable=False)
-    catalog_order_categories_created_on = mapped_column(DateTime(timezone=True),
-                                                        server_default=func.now(),
-                                                        nullable=False)
-    catalog_order_categories_update_on = mapped_column(DateTime(timezone=True),
-                                                       onupdate=func.now(),
-                                                       nullable=True)
+    id = mapped_column(Integer,
+                       primary_key=True,
+                       unique=True,
+                       nullable=False)
+    code = mapped_column(Integer,
+                         unique=True,
+                         nullable=False)
+    description = mapped_column(String(255),
+                                nullable=False)
+    state = mapped_column(Boolean,
+                          nullable=False)
+    created_on = mapped_column(DateTime(timezone=True),
+                               server_default=func.now(),
+                               nullable=False)
+    updated_on = mapped_column(DateTime(timezone=True),
+                               onupdate=func.now(),
+                               nullable=True)
 
 
 class CatalogOrderTypes(BaseModel):
     __tablename__ = "catalog_order_types"
-    catalog_order_types_id = mapped_column(Integer,
-                                           primary_key=True,
-                                           unique=True,
-                                           nullable=False)
-    catalog_order_types_code = mapped_column(Integer,
-                                             unique=True,
-                                             nullable=False)
-    catalog_order_types_name = mapped_column(String(255),
-                                             nullable=False)
-    catalog_order_types_state = mapped_column(Boolean,
-                                              nullable=False)
-    catalog_order_types_created_on = mapped_column(DateTime(timezone=True),
-                                                   server_default=func.now(),
-                                                   nullable=False)
-    catalog_order_types_update_on = mapped_column(DateTime(timezone=True),
-                                                  onupdate=func.now(),
-                                                  nullable=True)
+    id = mapped_column(Integer,
+                       primary_key=True,
+                       unique=True,
+                       nullable=False)
+    code = mapped_column(Integer,
+                         unique=True,
+                         nullable=False)
+    description = mapped_column(String(255),
+                                nullable=False)
+    state = mapped_column(Boolean,
+                          nullable=False)
+    created_on = mapped_column(DateTime(timezone=True),
+                               server_default=func.now(),
+                               nullable=False)
+    updated_on = mapped_column(DateTime(timezone=True),
+                               onupdate=func.now(),
+                               nullable=True)
 
 
 class CatalogOrderMovements(BaseModel):
     __tablename__ = "catalog_order_movements"
-    catalog_order_movements_id = mapped_column(Integer,
-                                               primary_key=True,
-                                               unique=True,
-                                               nullable=False)
-    catalog_order_movements_code = mapped_column(Integer,
-                                                 unique=True,
-                                                 nullable=False)
-    catalog_order_movements_name = mapped_column(String(255),
-                                                 nullable=False)
-    catalog_order_movements_state = mapped_column(Boolean,
-                                                  nullable=False)
-    catalog_order_movements_created_on = mapped_column(DateTime(timezone=True),
-                                                       server_default=func.now(),
-                                                       nullable=False)
-    catalog_order_movements_update_on = mapped_column(DateTime(timezone=True),
-                                                      onupdate=func.now(),
-                                                      nullable=True)
+    id = mapped_column(Integer,
+                       primary_key=True,
+                       unique=True,
+                       nullable=False)
+    code = mapped_column(Integer,
+                         unique=True,
+                         nullable=False)
+    description = mapped_column(String(255),
+                                nullable=False)
+    state = mapped_column(Boolean,
+                          nullable=False)
+    created_on = mapped_column(DateTime(timezone=True),
+                               server_default=func.now(),
+                               nullable=False)
+    updated_on = mapped_column(DateTime(timezone=True),
+                               onupdate=func.now(),
+                               nullable=True)
 
 
 class CatalogOrderStatus(BaseModel):
     __tablename__ = "catalog_order_status"
-    catalog_order_status_id = mapped_column(Integer,
-                                            primary_key=True,
-                                            unique=True,
-                                            nullable=False)
-    catalog_order_status_code = mapped_column(Integer,
-                                              unique=True,
-                                              nullable=False)
-    catalog_order_status_name = mapped_column(String(255),
-                                              nullable=False)
-    catalog_order_status_state = mapped_column(Boolean,
-                                               nullable=False)
-    catalog_order_status_created_on = mapped_column(DateTime(timezone=True),
-                                                    server_default=func.now(),
-                                                    nullable=False)
-    catalog_order_status_update_on = mapped_column(DateTime(timezone=True),
-                                                   onupdate=func.now(),
-                                                   nullable=True)
+    id = mapped_column(Integer,
+                       primary_key=True,
+                       unique=True,
+                       nullable=False)
+    code = mapped_column(Integer,
+                         unique=True,
+                         nullable=False)
+    description = mapped_column(String(255),
+                                nullable=False)
+    state = mapped_column(Boolean,
+                          nullable=False)
+    created_on = mapped_column(DateTime(timezone=True),
+                               server_default=func.now(),
+                               nullable=False)
+    updated_on = mapped_column(DateTime(timezone=True),
+                               onupdate=func.now(),
+                               nullable=True)

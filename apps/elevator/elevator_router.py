@@ -7,6 +7,8 @@ import logging
 from pathlib import Path
 from fastapi import APIRouter
 
+from apps.elevator.elevator_schemas import ElevatorDemand
+
 ##########################
 # Router main directory #
 ##########################
@@ -31,5 +33,10 @@ elevator_router = APIRouter(tags=['Elevator'])
 
 
 @elevator_router.post('/elevator/demand')
-async def elevator_demand():
-    return {'Hola mundo :D': 'Chao Mundo D:'}
+async def elevator_demand(demand_info: ElevatorDemand):
+    return demand_info
+
+
+@elevator_router.put('/elevator/demand')
+async def elevator_update():
+    return {'message': 'Elevator demand updated'}
