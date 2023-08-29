@@ -38,9 +38,9 @@ class Elevators(BaseModel):
                                         onupdate=func.now(),
                                         nullable=True)
 
-    elevators_elevator_orders: Mapped["ElevatorOrders"] = relationship(back_populates="elevator_orders_elevator",
+    elevators_elevator_orders: Mapped["ElevatorOrders"] = relationship(back_populates="elevator_orders_elevators",
                                                                        cascade="all,delete-orphan")
-    elevators_elevator_status: Mapped["ElevatorStatus"] = relationship(back_populates="elevator_status_elevator",
+    elevators_elevator_status: Mapped["ElevatorStatus"] = relationship(back_populates="elevator_status_elevators",
                                                                        cascade="all,delete-orphan")
 
 
@@ -72,7 +72,7 @@ class ElevatorOrders(BaseModel):
                                              onupdate=func.now(),
                                              nullable=True)
 
-    elevator_orders_elevator: Mapped["Elevators"] = relationship(back_populates="elevator_elevator_orders")
+    elevator_orders_elevators: Mapped["Elevators"] = relationship(back_populates="elevators_elevator_orders")
     elevator_orders_catalog_order_categories: Mapped["CatalogOrderCategories"] = relationship()
     elevator_orders_catalog_order_types: Mapped["CatalogOrderTypes"] = relationship()
     elevator_orders_catalog_order_movements: Mapped["CatalogOrderMovements"] = relationship()
@@ -98,7 +98,7 @@ class ElevatorStatus(BaseModel):
                                                server_default=func.now(),
                                                nullable=False)
 
-    elevator_status_elevator: Mapped["Elevators"] = relationship(back_populates="elevator_elevator_status")
+    elevator_status_elevators: Mapped["Elevators"] = relationship(back_populates="elevators_elevator_status")
     elevator_status_catalog_order_movements: Mapped["CatalogOrderMovements"] = relationship()
 
 
