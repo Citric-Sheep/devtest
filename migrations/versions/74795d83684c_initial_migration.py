@@ -1,8 +1,8 @@
 """initial_migration
 
-Revision ID: 6689fae13761
+Revision ID: 74795d83684c
 Revises: 
-Create Date: 2023-08-28 08:14:00.240698
+Create Date: 2023-08-29 06:59:23.855524
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '6689fae13761'
+revision: str = '74795d83684c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -89,7 +89,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('elevator_id')
     )
     op.create_table('elevator_orders',
-    sa.Column('elevator_orders_id', sa.Integer(), nullable=False),
+    sa.Column('elevator_order_id', sa.Integer(), nullable=False),
     sa.Column('elevator_id', sa.Integer(), nullable=True),
     sa.Column('elevator_order_demand_category', sa.Integer(), nullable=False),
     sa.Column('elevator_order_demand_type', sa.Integer(), nullable=True),
@@ -104,8 +104,8 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['elevator_order_demand_type'], ['catalog_order_types.code'], ),
     sa.ForeignKeyConstraint(['elevator_order_movement_status'], ['catalog_order_movements.code'], ),
     sa.ForeignKeyConstraint(['elevator_order_request_status'], ['catalog_order_status.code'], ),
-    sa.PrimaryKeyConstraint('elevator_orders_id'),
-    sa.UniqueConstraint('elevator_orders_id')
+    sa.PrimaryKeyConstraint('elevator_order_id'),
+    sa.UniqueConstraint('elevator_order_id')
     )
     op.create_table('elevator_status',
     sa.Column('elevator_status_id', sa.Integer(), nullable=False),
