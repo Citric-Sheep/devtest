@@ -23,6 +23,7 @@ class ElevatorUpdate(BaseModel):
     elevator_id: int
     current_floor: int
     current_movement: int
+    request_id: Optional[int]
 
 
 class ElevatorStatus(BaseModel):

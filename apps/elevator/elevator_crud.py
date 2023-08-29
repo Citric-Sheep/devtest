@@ -42,24 +42,18 @@ def check_demand(demand_info: ElevatorDemand,
 
 def update_demands(update_info: ElevatorUpdate,
                    db_session: Session):
-    if update_info.current_movement in [1, 2]:
-        demand_type = update_info.current_movement
-    else:
-        demand_type = None
-
     db_session.query(ElevatorOrders) \
               .filter(ElevatorOrders.elevator_id == update_info.elevator_id,
                       ElevatorOrders.elevator_order_request_status == 1,
                       ElevatorOrders.elevator_order_demand_floor == update_info.current_floor,
                       ElevatorOrders.elevator_order_demand_category == 2) \
               .update({'elevator_order_request_status': 2})
-    if demand_type:
-        db_session.query(ElevatorOrders) \
-                  .filter(ElevatorOrders.elevator_id == update_info.elevator_id,
-                          ElevatorOrders.elevator_order_request_status == 1,
-                          ElevatorOrders.elevator_order_demand_floor == update_info.current_floor,
-                          ElevatorOrders.elevator_order_demand_type == demand_type,
-                          ElevatorOrders.elevator_order_demand_category == 1) \
-                  .update({'elevator_order_request_status': 2})
+    db_session.query(ElevatorOrders) \
+              .filter(ElevatorOrders.elevator_id == update_info.elevator_id,
+                      ElevatorOrders.elevator_order_request_status == 1,
+                      ElevatorOrders.elevator_order_demand_floor == update_info.current_floor,
+                      ElevatorOrders.elevator_order_id == update_info.request_id,
+                      ElevatorOrders.elevator_order_demand_category == 1) \
+              .update({'elevator_order_request_status': 2})
 
     db_session.commit()

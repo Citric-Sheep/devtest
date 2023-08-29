@@ -53,11 +53,11 @@ async def elevator_update(update_data: ElevatorUpdate,
     logger.info("Attempting to update elevator demands")
     update_demands(update_data, db)
     demand_data = ElevatorDemand(elevator_id=update_data.elevator_id,
-                                 demand_category=0,
                                  current_floor=update_data.current_floor,
                                  destination_floor=update_data.current_floor,
                                  current_movement=update_data.current_movement,
-                                 demand_type=0)
+                                 demand_category=-1,
+                                 demand_type=-1)
     current_demand = check_demand(demand_data, db)
     logger.info("Demands successfully updated")
     return current_demand

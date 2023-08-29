@@ -46,10 +46,10 @@ class Elevators(BaseModel):
 
 class ElevatorOrders(BaseModel):
     __tablename__ = "elevator_orders"
-    elevator_orders_id = mapped_column(Integer,
-                                       primary_key=True,
-                                       unique=True,
-                                       nullable=False)
+    elevator_order_id = mapped_column(Integer,
+                                      primary_key=True,
+                                      unique=True,
+                                      nullable=False)
     elevator_id = mapped_column(ForeignKey("elevators.elevator_id",
                                 ondelete="SET NULL"),
                                 nullable=True)
