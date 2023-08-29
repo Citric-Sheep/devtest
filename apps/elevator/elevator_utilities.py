@@ -56,4 +56,4 @@ class Elevator:
                 target_floor = self.current_floor
         else:
             target_floor = self.current_floor
-        return target_floor
+        return {'target_floor': target_floor}
