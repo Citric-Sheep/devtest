@@ -54,6 +54,29 @@ class ConfigurationDbCredentials:
                       f"{self.DB_NAME}"
 
 
+class ConfigurationTestDbCredentials:
+    def __init__(self,
+                 db_user,
+                 db_password,
+                 db_server,
+                 db_port,
+                 db_name):
+        self.DB_USER: str = os.getenv(db_user)
+        self.DB_PASSWORD = os.getenv(db_password)
+        self.DB_SERVER: str = os.getenv(db_server,
+                                        "localhost")
+        self.DB_PORT: str = os.getenv(db_port,
+                                      5432)
+        self.DB_NAME: str = os.getenv(db_name,
+                                      "tdd")
+        self.DB_URL = f"postgresql://" \
+                      f"{self.DB_USER}:" \
+                      f"{self.DB_PASSWORD}@" \
+                      f"{self.DB_SERVER}:" \
+                      f"{self.DB_PORT}/" \
+                      f"{self.DB_NAME}"
+
+
 ##########################################
 # Execution of configuration attributes #
 ##########################################
@@ -66,3 +89,8 @@ configure_bd_credentials = ConfigurationDbCredentials('DB_USER',
                                                       'DB_SERVER',
                                                       'DB_PORT',
                                                       'DB_NAME')
+configure_bd_test_credentials = ConfigurationTestDbCredentials('DB_TEST_USER',
+                                                               'DB_TEST_PASSWORD',
+                                                               'DB_TEST_SERVER',
+                                                               'DB_TEST_PORT',
+                                                               'DB_TEST_NAME')
