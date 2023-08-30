@@ -1,9 +1,19 @@
+##############
+# Libraries #
+##############
+
+from typing import List
+
+
 ###################
 # Elevator logic #
 ###################
 
 class Elevator:
-    def __init__(self, request_queue, direction=3, current_floor=1):
+    def __init__(self,
+                 request_queue: List,
+                 direction: int = 3,
+                 current_floor: int = 1):
         self.current_floor = current_floor
         self.direction = direction
         self.request_queue = request_queue
