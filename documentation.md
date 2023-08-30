@@ -11,6 +11,11 @@
 - **os**: Interact with the operating system. Used for getting paths, environment variables, etc.
 - **dotenv**: A library to load environment variables from a `.env` file.
 - **sqlalchemy**: The SQL Toolkit and Object-Relational Mapping (ORM) library for Python. We are importing functionalities to create an engine and manage sessions.
+- **uvicorn**: A lightning-fast ASGI server implementation, using uvloop and httptools.
+- **psycopg2**: A PostgreSQL database adapter for Python.
+- **pydantic**: Data validation and settings management using Python type hinting.
+- **pathlib**: A library for representing the file system path semantics of different operating systems.
+- 
 
 ## Logger Configuration
 
@@ -141,7 +146,43 @@ When training a machine learning model to predict the resting floor of an elevat
 The combination of these features provides a holistic view of the elevator's operations, demands, and behaviors. By training a model on this data, we can potentially predict the elevator's resting floor with higher accuracy, taking into account various influencing factors.
 This narrative offers an understanding of how the fields from the mentioned tables can play a pivotal role in predicting the elevator's resting floor.
 
+## Elevator Router
 
+### Router execution
+
+- **elevator_router**: An instance of the FastAPI APIRouter, which will be used to define endpoints related to elevator functions.
+
+
+### Elevator API Endpoints
+
+#### POST `/elevator/demand`
+- Allows a user to place a demand for the elevator.
+- **Parameters**:
+  - `demand_data`: Contains data such as the elevator ID, current floor, and movement status.
+- **Returns**: The current elevator demand after processing the user's request.
+
+#### PUT `/elevator/demand`
+- Updates the demand for the elevator.
+- **Parameters**:
+  - `update_data`: Contains data to update the elevator's demand.
+- **Returns**: The updated elevator demand.
+
+#### DELETE `/elevator/demand`
+- Deletes a specific demand for the elevator.
+- **Parameters**:
+  - `delete_data`: Contains data about the elevator demand to delete.
+- **Returns**: The current elevator demand after the deletion.
+
+#### POST `/elevator/status`
+- Adds a new status entry for the elevator.
+- **Parameters**:
+  - `demand_data`: Contains data such as the elevator ID and its current status.
+- **Note**: This function doesn't return any data but logs the success of the operation.
+
+### Exception Handling
+All API endpoints incorporate robust error handling:
+- **DatabaseError**: Catches and logs errors related to the database.
+- **ServerError**: Catches and logs unexpected errors, providing feedback to the user.
 
 
 

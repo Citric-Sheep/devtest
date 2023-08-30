@@ -3,7 +3,6 @@
 ##############
 
 import logging
-import traceback
 
 from pathlib import Path
 from fastapi import APIRouter, Depends
@@ -77,7 +76,6 @@ async def elevator_update(update_data: ElevatorUpdate,
         logger.info("Demands successfully updated")
         return current_demand
     except DatabaseError as error:
-        traceback.print_exc()
         logger.error("There was a database error while processing the user request: {error_exception}".format(error_exception=error.original_exception))
         raise error
     except Exception as error:
