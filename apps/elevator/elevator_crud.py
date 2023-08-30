@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from database.db_models import ElevatorOrders
 
-from apps.elevator.elevator_schemas import ElevatorDemand, ElevatorUpdate
+from apps.elevator.elevator_schemas import ElevatorCheck, ElevatorDemand, ElevatorUpdate, ElevatorStatus, ElevatorDelete
 from apps.elevator.elevator_utilities import Elevator
 from apps.elevator.elevator_exceptions import DatabaseError
 
@@ -35,11 +35,31 @@ def add_demand(demand_info: ElevatorDemand,
                             original_exception=error)
 
 
+####################
+# add status data #
+####################
+
+def add_status(status_info: ElevatorStatus,
+               db_session: Session):
+    try:
+        status_data = ElevatorOrders(elevator_id=status_info.elevator_id,
+                                     elevator_status_movement=status_info.current_movement,
+                                     elevator_status_current_floor=status_info.current_floor,
+                                     elevator_status_destination_floor=status_info.destination_floor)
+        db_session.add(status_data)
+        db_session.commit()
+        db_session.refresh(status_data)
+    except Exception as error:
+        db_session.rollback()
+        raise DatabaseError(message="There was an unexpected error while adding to the database",
+                            original_exception=error)
+
+
 ##########################
 # Check current demands #
 ##########################
 
-def check_demand(demand_info: ElevatorDemand | ElevatorUpdate,
+def check_demand(demand_info: ElevatorCheck,
                  db_session: Session):
     try:
         records = db_session.query(ElevatorOrders).filter(ElevatorOrders.elevator_id == demand_info.elevator_id,
@@ -81,4 +101,24 @@ def update_demands(update_info: ElevatorUpdate,
     except Exception as error:
         db_session.rollback()
         raise DatabaseError(message="There was an unexpected error while updating the database",
+                            original_exception=error)
+
+
+##########################
+# Delete current demand #
+##########################
+
+def delete_demand(delete_info: ElevatorDelete,
+                  db_session: Session):
+    try:
+        delete_query = db_session.query(ElevatorOrders) \
+                                 .filter(ElevatorOrders.elevator_id == delete_info.elevator_id,
+                                         ElevatorOrders.elevator_order_request_status == 1,
+                                         ElevatorOrders.elevator_order_id == delete_info.request_id)
+        delete_query.first()
+        delete_query.delete()
+        db_session.commit()
+    except Exception as error:
+        db_session.rollback()
+        raise DatabaseError(message="There was an unexpected error while deleting the database",
                             original_exception=error)
