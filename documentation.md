@@ -271,7 +271,7 @@ The current architecture and data collection setup have several distinct advanta
 
 ## 9. Data Ingestion for ML:
 - Given the structured nature of the database models and the relationships between them, it makes data ingestion for machine learning seamless. Machine learning models require clean, structured data, and the current setup ensures that data fed into the model is consistent, reducing the need for extensive preprocessing. This not only speeds up the training process but also enhances model accuracy.
-
+---
 Also while it's early to comment which model would be better for this use case, It could be recommended two options given the nature of the problem, a supervised model or a time series forecasting model. The supervised model would be trained on the historical data to predict the resting floor of an elevator. The time series forecasting model would be trained on the historical data to predict the resting floor of an elevator at a specific time in the future. Both models would be trained on the same data and evaluated on the same metrics to determine which one is better suited for the use case.
 
 The way this data is stored makes this app viable to even implement the ML model because it can be done by adding endpoints throught other routers from the same base, via a clean table that has been preprocessed to be used by the ML model. taking advantage of the database connection via dependency injections like it has been already used in the current endpoints.
