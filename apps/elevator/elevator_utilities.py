@@ -3,11 +3,18 @@
 ##############
 
 from typing import List
+from enum import Enum
 
 
 ###################
 # Elevator logic #
 ###################
+
+class Direction(Enum):
+    STATIONARY = 3
+    DOWN = 2
+    UP = 1
+
 
 class Elevator:
     def __init__(self,
@@ -15,15 +22,15 @@ class Elevator:
                  direction: int = 3,
                  current_floor: int = 1):
         self.current_floor = current_floor
-        self.direction = direction
+        self.direction = Direction(direction)
         self.request_queue = request_queue
 
     def target_floor(self):
-        if self.direction == 3:
-            sorted_queue = sorted(self.request_queue, key=lambda x: x.elevator_order_update_on)
+        if self.direction == self.direction.STATIONARY:
+            sorted_queue = sorted(self.request_queue, key=lambda x: x.elevator_order_created_on)
             target_floor = sorted_queue[0].elevator_order_demand_floor
             request_id = sorted_queue[0].elevator_order_id
-        elif self.direction == 2:
+        elif self.direction == self.direction.DOWN:
             down_queue = []
             up_queue = []
             for record in self.request_queue:
@@ -46,7 +53,7 @@ class Elevator:
             else:
                 target_floor = self.current_floor
                 request_id = None
-        elif self.direction == 1:
+        elif self.direction == self.direction.UP:
             down_queue = []
             up_queue = []
             for record in self.request_queue:
