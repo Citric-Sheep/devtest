@@ -4,17 +4,12 @@
 
 ## Libraries
 
-- **logging**: The built-in Python library used for logging application events.
 - **FastAPI**: A modern, fast web framework for building APIs with Python 3.7+. 
-- **os**: Interact with the operating system. Used for getting paths, environment variables, etc.
 - **dotenv**: A library to load environment variables from a `.env` file.
 - **sqlalchemy**: The SQL Toolkit and Object-Relational Mapping (ORM) library for Python. We are importing functionalities to create an engine and manage sessions.
 - **uvicorn**: A lightning-fast ASGI server implementation, using uvloop and httptools.
 - **psycopg2**: A PostgreSQL database adapter for Python.
 - **pydantic**: Data validation and settings management using Python type hinting.
-- **pathlib**: A library for representing the file system path semantics of different operating systems.
-- **typing**: Support for type hints.
-- **enum**: Support for enumerations.
 - **alembic**: A database migration tool for SQLAlchemy.
 - **pytest**: A framework that makes it easy to write small tests, yet scales to support complex functional testing for applications and libraries.
 
@@ -281,8 +276,8 @@ Also while it's early to comment which model would be better for this use case, 
 
 The way this data is stored makes this app viable to even implement the ML model because it can be done by adding endpoints throught other routers from the same base, via a clean table that has been preprocessed to be used by the ML model. taking advantage of the database connection via dependency injections like it has been already used in the current endpoints.
 
-Getting into more technical details, one first has to investigate how the data behaves before choosing a model, for example if we go by a supervised model, we have to see the frequency of the predictions in pair with the complexity, this will be closely associated with the complexity of the elevator use, for example it's not the same having to predict a resting floor for a building that has a low demand (and this implies less data to train) that a high concurrence building, where the data is more complex and the predictions are more recurrent.
+Getting into more technical details, one first has to investigate how the data behaves before choosing a model, for example if we go by a supervised model, we have to see the frequency of the predictions in pair with the complexity of the elevator use, for example it's not the same having to predict a resting floor for a building that has a low demand (and this implies less data to train) than a high concurrence building, where the data is more complex.
 
 For a Time Series Forecasting model is the same, the complexity of the data will determine the complexity of the model, and the complexity of the model will determine the complexity of the data, so it's a matter of finding the right balance between the two. it's not the same to use for example an ARIMA model for a building with low demand than a Prophet model or even a Neural Network (RNN, LSTM, GRU) for a building with high demand.
 
-With this in mind, collecting all the posible data that a normal elevator could provide in an structure way with some external data and fields where more data could be store in the future make this a good approach for the problem.
+With this in mind, collecting all the posible data that a normal elevator could provide in an structure way with some external data and provide fields where more data could be store in the future make this a good approach for the problem.
