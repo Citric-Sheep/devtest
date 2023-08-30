@@ -1,12 +1,5 @@
 # Documentation for the Citric Sheep Application
 
-## Table of Contents
-
-1. [Libraries](#libraries)
-2. [Logger Configuration](#logger-configuration)
-3. [APP Configuration](#app-configuration)
-4. [APP Main Routers](#app-main-routers)
-
 ---
 
 ## Libraries
@@ -17,6 +10,7 @@
 - **elevator_router**: From the `apps.elevator` package, this module is responsible for routes related to the elevator functionality of the application.
 - **os**: Interact with the operating system. Used for getting paths, environment variables, etc.
 - **dotenv**: A library to load environment variables from a `.env` file.
+- **sqlalchemy**: The SQL Toolkit and Object-Relational Mapping (ORM) library for Python. We are importing functionalities to create an engine and manage sessions.
 
 ## Logger Configuration
 
@@ -73,3 +67,81 @@ We create an instance of FastAPI, setting its `title` and `version` attributes u
 ## APP Main Routers
 
 The main application, `app_main`, incorporates the `elevator_router`. This means that the routes defined in `elevator_router` are registered with our main FastAPI application and are accessible once the application starts.
+
+## Database Connection
+
+- `db_sqlalchemy_url`: Fetches the database URL from the previously configured credentials.
+  
+- `db_sqlalchemy_engine`: Creates a SQLAlchemy engine using the database URL. This engine maintains a connection pool with a size of 20.
+  
+- `db_sqlalchemy_session`: Constructs a session factory bound to the engine. The session is set up with configurations to not autocommit transactions and not to autoflush operations automatically.
+
+- `db_connection`: Returns a session instance from the session factory. This session is used to interact with the database.
+
+## Database Models
+
+- **BaseModel**: This is a declarative base class for all ORM models in the application.
+
+- **Elevators**: Represents a table in the database to store information about different elevators.
+  
+- **ElevatorOrders**: Represents a table to store elevator requests or orders. It has relationships defined with the `Elevators` model and various catalog models.
+
+- **ElevatorStatus**: Represents a table to store the current status of an elevator.
+
+- **CatalogElevatorStates**: A catalog table to store different possible states an elevator can be in.
+
+- **CatalogOrderCategories**: A catalog table to store different categories of elevator orders.
+
+- **CatalogOrderTypes**: A catalog table to store different types of elevator orders.
+
+- **CatalogOrderMovements**: A catalog table to store various movements or directions an elevator can move in (e.g., up, down, rest).
+
+- **CatalogOrderStatus**: A catalog table to store the status of an elevator order.
+
+Each class represents a table in the database. They have been designed using SQLAlchemy's ORM capabilities and include attributes corresponding to columns in the respective tables. Additionally, relationships between different tables are also defined using SQLAlchemy's `relationship` function.
+
+## Significance of Fields for Machine Learning Model
+
+When training a machine learning model to predict the resting floor of an elevator, it's essential to use relevant features that can provide significant predictive power. The fields in the `Elevators`, `ElevatorOrders`, and `ElevatorStatus` tables possess properties that can be invaluable for such a task.
+
+### Elevators
+
+- **elevators_name**: The name or ID of the elevator can provide historical data about the elevator's common stopping or resting floors.
+
+- **elevators_details**: Any specific details about the elevator might indicate certain patterns or behaviors linked with specific floors.
+
+- **elevators_floors**: The total number of floors the elevator serves is crucial. It sets the boundary conditions for our prediction.
+
+- **elevators_rooms**: The number of rooms or offices on each floor can correlate with traffic and subsequently with resting floors, especially during peak hours.
+
+- **elevators_state**: This can give insights into the elevator's current operational state, which can influence its stopping behavior.
+
+- **elevators_created_on & elevators_update_on**: Timestamps can be instrumental in recognizing patterns during specific times of the day, week, or year.
+
+### ElevatorOrders
+
+- **elevator_order_demand_category**: Categories of demand can hint at the type of users or purposes of the elevator trip, influencing the resting floor.
+
+- **elevator_order_demand_type**: Similar to demand category, the type of demand might provide insights into frequent stops.
+
+- **elevator_order_demand_floor & elevator_order_current_floor**: These fields provide a snapshot of where the demands are coming from and where the elevator currently is, which can be used to predict where the elevator might rest next.
+
+- **elevator_order_movement_status & elevator_order_request_status**: The movement and request status can offer insights into the elevator's current operations and the nature of requests it's receiving.
+
+- **elevator_order_created_on & elevator_order_update_on**: Understanding the frequency and timing of orders can help predict busy hours and subsequently potential resting floors.
+
+### ElevatorStatus
+
+- **elevator_status_movement**: Current movement direction can be a strong predictor, especially when combined with order data.
+
+- **elevator_status_current_floor & elevator_status_final_floor**: Knowing the elevator's current and final destination floors is pivotal in predicting its resting floor.
+
+- **elevator_status_created_on**: Timestamps can help identify patterns based on time-based behaviors.
+
+The combination of these features provides a holistic view of the elevator's operations, demands, and behaviors. By training a model on this data, we can potentially predict the elevator's resting floor with higher accuracy, taking into account various influencing factors.
+This narrative offers an understanding of how the fields from the mentioned tables can play a pivotal role in predicting the elevator's resting floor.
+
+
+
+
+
