@@ -42,4 +42,5 @@ class ElevatorStatus(BaseModel):
 class ElevatorDelete(BaseModel):
     elevator_id: int
     request_id: int
+    current_floor: int
     current_movement: int

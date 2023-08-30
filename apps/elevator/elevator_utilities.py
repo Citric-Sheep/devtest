@@ -28,8 +28,12 @@ class Elevator:
     def target_floor(self):
         if self.direction == self.direction.STATIONARY:
             sorted_queue = sorted(self.request_queue, key=lambda x: x.elevator_order_created_on)
-            target_floor = sorted_queue[0].elevator_order_demand_floor
-            request_id = sorted_queue[0].elevator_order_id
+            if sorted_queue:
+                target_floor = sorted_queue[0].elevator_order_demand_floor
+                request_id = sorted_queue[0].elevator_order_id
+            else:
+                target_floor = self.current_floor
+                request_id = None
         elif self.direction == self.direction.DOWN:
             down_queue = []
             up_queue = []
