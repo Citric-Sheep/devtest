@@ -1,3 +1,23 @@
+# Mauricio Mazuecos Solution
+
+## Elevators
+
+The database contains a single table elevator\_registry that contains the following fields:
+- entry_id: integer, primary key, autoincrement
+- cur_position: integer, not null, the current position of the elevator
+- time_stamp: timestamp without timezone, not null, the time when the elevator changed its position
+- demanded: integer, not null, if the elevator was demanded to reach to its current position
+
+Additionally there is a simple fastapi endpoint that downloads the data from the database and returns it as a csv.
+
+The only setup is running:
+```
+docker-compose up
+```
+
+And loading the data with the db.sql file.
+
+---
 # Dev Test
 
 ## Elevators
