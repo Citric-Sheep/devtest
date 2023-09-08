@@ -6,17 +6,12 @@ import os
 from fastapi.responses import FileResponse
 import psycopg2
 import pandas as pd
-import logging
 from tempfile import NamedTemporaryFile
-
-
-logger = logging.getLogger(__name__)
 
 
 app = FastAPI()
 
 
-# Replace with your database credentials
 @app.get("/get_data")
 def get_data():
     connection = psycopg2.connect(
@@ -29,20 +24,14 @@ def get_data():
 
     cursor = connection.cursor()
 
-    # Execute a SELECT query
     cursor.execute("SELECT * FROM elevator_registry")
 
-    # Fetch and process the results into a Pandas DataFrame
     rows = cursor.fetchall()
     column_names = [desc[0] for desc in cursor.description]
-    # Close the cursor and the connection
     cursor.close()
     connection.close()
     df = pd.DataFrame(rows, columns=column_names)
     csv_data = df.to_csv(index=False)
-
-    logger.info("Data successfully retrieved from the database.")
-    logger.debug(f"Data retrieved: {csv_data}")
 
     # Create a temporary file to store the CSV data
     with NamedTemporaryFile(delete=False, mode='w', suffix='.csv') as temp_file:
