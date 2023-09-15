@@ -5,6 +5,8 @@
 from typing import List
 from enum import Enum
 
+from database.db_models import ElevatorOrders
+
 
 ###################
 # Elevator logic #
@@ -18,7 +20,7 @@ class Direction(Enum):
 
 class Elevator:
     def __init__(self,
-                 request_queue: List,
+                 request_queue: List[ElevatorOrders],
                  direction: int = 3,
                  current_floor: int = 1):
         self.current_floor = current_floor

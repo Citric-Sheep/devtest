@@ -31,6 +31,9 @@ class Elevators(BaseModel):
                                     nullable=False)
     elevators_state = mapped_column(ForeignKey("catalog_elevator_states.code"),
                                     nullable=False)
+    elevators_request_status = mapped_column(ForeignKey("catalog_order_status.code"), nullable=True)
+    elevators_request_queue = mapped_column(String, nullable=True)
+
     elevators_created_on = mapped_column(DateTime(timezone=True),
                                          server_default=func.now(),
                                          nullable=False)
@@ -63,8 +66,6 @@ class ElevatorOrders(BaseModel):
                                                  nullable=False)
     elevator_order_movement_status = mapped_column(ForeignKey("catalog_order_movements.code"),
                                                    nullable=False)
-    elevator_order_request_status = mapped_column(ForeignKey("catalog_order_status.code"),
-                                                  nullable=False)
     elevator_order_created_on = mapped_column(DateTime(timezone=True),
                                               server_default=func.now(),
                                               nullable=False)
@@ -76,7 +77,6 @@ class ElevatorOrders(BaseModel):
     elevator_orders_catalog_order_categories: Mapped["CatalogOrderCategories"] = relationship()
     elevator_orders_catalog_order_types: Mapped["CatalogOrderTypes"] = relationship()
     elevator_orders_catalog_order_movements: Mapped["CatalogOrderMovements"] = relationship()
-    elevator_orders_catalog_order_status: Mapped["CatalogOrderStatus"] = relationship()
 
 
 class ElevatorStatus(BaseModel):
