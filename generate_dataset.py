@@ -152,6 +152,7 @@ class GenerateDataset():
     
     
     def generate_elevator_states(self):
+        self.load_elevator_variables()
         self.floor_weights_mapping()
         self.obtain_table_last_state()        
         

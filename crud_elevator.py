@@ -1,10 +1,10 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from datetime import datetime
-from create_db import ElevatorState
+from models import ElevatorState
 from sqlalchemy.orm import  sessionmaker
 from sqlalchemy import desc
-
+from dotenv import load_dotenv
+import os
 
 # Create a session
 class ElevatorStateManager:
@@ -77,8 +77,7 @@ class ElevatorStateManager:
             print(f"Error deleting all rows: {e}")
             
 if __name__ == "__main__":
-    from dotenv import load_dotenv
-    import os
+
     load_dotenv()
     DATABASE_URL = os.getenv("DATABASE_URL")
     manager = ElevatorStateManager(database_url=DATABASE_URL)

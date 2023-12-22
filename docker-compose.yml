@@ -1,0 +1,19 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+    - DATABASE_URL=postgresql://dev_user:my_dev_password@db/my_dev_database
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: my_dev_database
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: my_dev_password
