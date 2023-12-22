@@ -3,8 +3,7 @@ from fastapi.responses import JSONResponse
 from crud_elevator import ElevatorStateManager  # Assuming you have this module in the same directory
 from generate_dataset import GenerateDataset  # Rename your existing code to generate_dataset.py
 from sqlalchemy import create_engine, inspect
-from fastapi.responses import StreamingResponse
-import io
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from db import Base 
 import uvicorn
@@ -50,10 +49,11 @@ async def delete_all_rows():
 
 @app.get("/get-all-rows")
 async def get_all_rows():
+    
     try:
         all_rows = elevator.get_all_elevator_states()
         if not all_rows:
-            raise HTTPException(status_code=404, detail="No rows found in the database.")
+            all_rows = "No data in the database"
         return all_rows
     except Exception as e:
         return JSONResponse(content={"message": f"Error getting all rows: {str(e)}"}, status_code=500)
@@ -63,19 +63,17 @@ async def save_to_csv(csv_filename: str = Query("elevator_states.csv")):
     try:
         all_rows = elevator.get_all_elevator_states()
         if not all_rows:
-            raise HTTPException(status_code=404, detail="No rows found in the database.")
+            return JSONResponse(content={"message": f"No data in the database"}, status_code=500)
 
         # Convert rows to a DataFrame
         df = pd.DataFrame([row.__dict__ for row in all_rows])
         df = df.drop(columns=['_sa_instance_state'], errors='ignore')
         
-        stream = io.StringIO()
-        df.to_csv(stream, index = False)
-        response = StreamingResponse(iter([stream.getvalue()]),
-                                    media_type="text/csv"
-                                    )
-        response.headers["Content-Disposition"] = "attachment; filename=export.csv"
-        return response
+        # Save DataFrame to a CSV file
+        df.to_csv(csv_filename, index=False)
+
+        # Use FileResponse to allow users to download the CSV file
+        return FileResponse(csv_filename, filename=csv_filename, media_type="text/csv")    
     except Exception as e:
         return JSONResponse(content={"message": f"Error saving to CSV: {str(e)}"}, status_code=500)
 
