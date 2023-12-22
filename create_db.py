@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.sql import func
+from sqlalchemy import create_engine, Column, Integer, DateTime
+from sqlalchemy.orm import declarative_base
+from dotenv import load_dotenv
+import os
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASE_URL = "postgresql://postgres:david.123@localhost:5432/citric_elevator"
 engine = create_engine(DATABASE_URL)
 
 Base = declarative_base()

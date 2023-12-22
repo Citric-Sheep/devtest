@@ -2,10 +2,15 @@ from crud_elevator import ElevatorStateManager
 import random
 from datetime import datetime, timedelta
 import json
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 class GenerateDataset():
     def __init__(self) -> None:
-        self.elevator = ElevatorStateManager(database_url="postgresql://postgres:david.123@localhost:5432/citric_elevator")
+        
+        DATABASE_URL = os.getenv("DATABASE_URL")
+        self.elevator = ElevatorStateManager(database_url=DATABASE_URL)
         self.load_elevator_variables()
         
     def load_elevator_variables(self):

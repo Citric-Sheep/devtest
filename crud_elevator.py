@@ -77,8 +77,11 @@ class ElevatorStateManager:
             print(f"Error deleting all rows: {e}")
             
 if __name__ == "__main__":
-    #     # Example usage
-    manager = ElevatorStateManager(database_url="postgresql://postgres:david.123@localhost:5432/citric_elevator")
+    from dotenv import load_dotenv
+    import os
+    load_dotenv()
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    manager = ElevatorStateManager(database_url=DATABASE_URL)
     #  # Read again after deletion
     # all_states_after_deletion = manager.get_all_elevator_states()
     # print("All states after deletion:", all_states_after_deletion)
