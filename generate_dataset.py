@@ -152,6 +152,7 @@ class GenerateDataset:
             for floor, weight in floor_weights_mapping.items()
         }
         self.weight_list = list(floor_weights_mapping.values())
+        print("self.weight_list", self.weight_list)
 
     def pick_random_floor_weighted(self):
         random_floor = random.choices(
@@ -244,6 +245,8 @@ class GenerateDataset:
             self.current_floor = self.next_floor
             self.demand_floor = self.pick_random_floor_weighted()
             self.start_time = call_datetime
+            
+    
 
 
 if __name__ == "__main__":
