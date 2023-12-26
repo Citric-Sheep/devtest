@@ -24,7 +24,11 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
+        export DATABASE_URL=postgresql://dev_user:my_dev_password@db/my_dev_database
+
         make test
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
     
     
     
