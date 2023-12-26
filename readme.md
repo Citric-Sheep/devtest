@@ -1,3 +1,4 @@
+[![Python template](https://github.com/DavidNavarroSaiz/Elevator_data_generator/actions/workflows/main.yml/badge.svg)](https://github.com/DavidNavarroSaiz/Elevator_data_generator/actions/workflows/main.yml)
 # Dev Test
 
 ## Elevators
