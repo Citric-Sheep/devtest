@@ -10,7 +10,7 @@ load_dotenv()
 
 class GenerateDataset:
     def __init__(self) -> None:
-        DATABASE_URL = os.getenv("DATABASE_URL")
+        DATABASE_URL = os.getenv("DATABASE_URL","custom_url")
         self.elevator = ElevatorStateManager(database_url=DATABASE_URL)
         self.load_elevator_variables()
 
