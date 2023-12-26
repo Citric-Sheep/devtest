@@ -286,19 +286,19 @@ Executes the elevator state generator.
 
 ## Delete All Rows Endpoint
 
-### Endpoint: /delete-all-rows
+### Endpoint: `/delete-all-rows`
 **Description:**  
 Deletes all elevator state rows from the database.
 
 HTTP Method: GET
 
 ## Get All Rows Endpoint
-### Endpoint: /get-all-rows
+### Endpoint: `/get-all-rows`
 **Description:**  
 Retrieves all elevator state rows from the database.
 
 ## Save to CSV Endpoint
 
-### Endpoint: /save-to-csv
+### Endpoint: `/save-to-csv`
 **Description:**  
 Saves all elevator state rows to a CSV file and allows users to download it.
