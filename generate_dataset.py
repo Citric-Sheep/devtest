@@ -245,8 +245,6 @@ class GenerateDataset:
             self.current_floor = self.next_floor
             self.demand_floor = self.pick_random_floor_weighted()
             self.start_time = call_datetime
-            
-    
 
 
 if __name__ == "__main__":
