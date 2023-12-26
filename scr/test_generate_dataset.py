@@ -1,4 +1,4 @@
-from generate_dataset import GenerateDataset
+from scr.generate_dataset import GenerateDataset
 from datetime import datetime, timedelta
 import pytest
 import os

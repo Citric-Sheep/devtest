@@ -1,6 +1,6 @@
 # models.py
 from sqlalchemy import Column, Integer, DateTime
-from db import Base
+from scr.db import Base
 
 
 class ElevatorState(Base):

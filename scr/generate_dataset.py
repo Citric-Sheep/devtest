@@ -1,4 +1,4 @@
-from crud_elevator import ElevatorStateManager
+from scr.crud_elevator import ElevatorStateManager
 import random
 from datetime import datetime, timedelta
 import json
@@ -41,7 +41,7 @@ class GenerateDataset:
     def load_elevator_variables(self):
         """Loads elevator-related variables from a JSON file."""
         try:
-            with open("elevator_variables.json", "r") as json_file:
+            with open("./scr/elevator_variables.json", "r") as json_file:
                 data = json.load(json_file)
 
             # Validate structure

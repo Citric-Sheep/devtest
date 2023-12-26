@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from datetime import datetime
-from models import ElevatorState
+from scr.models import ElevatorState
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
 from dotenv import load_dotenv
