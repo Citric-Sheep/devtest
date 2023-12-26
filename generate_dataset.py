@@ -9,12 +9,37 @@ load_dotenv()
 
 
 class GenerateDataset:
+    """Generates a dataset of elevator states based on specified parameters.
+
+    The dataset is created and stored in a database using the ElevatorStateManager.
+
+    Attributes:
+        elevator (ElevatorStateManager): An instance of ElevatorStateManager for database interaction.
+        floor_capacities (dict): Mapping of floor types to capacities.
+        floor_types (dict): Mapping of floor numbers to floor types.
+        rows_generated (int): Number of elevator states to generate.
+        floor_number (int): Total number of floors in the building.
+        min_time_interval_seconds (int): Minimum time interval in seconds between elevator states.
+        max_time_interval_seconds (int): Maximum time interval in seconds between elevator states.
+        interval_per_floor_seconds (float): Time interval per floor in seconds.
+        peak_hours (list): List of dictionaries representing peak hours intervals.
+        peak_multiplier (float): Multiplier for peak hours intervals.
+        random_minutes_range (dict): Range of random minutes added to intervals.
+        weight_list (list): List of weights assigned to each floor based on capacities.
+        current_floor (int): Current floor in the elevator simulation.
+        demand_floor (int): Floor where the elevator is in demand.
+        start_time (datetime): Start time for the elevator simulation.
+        next_floor (int): Next floor to which the elevator will move.
+    """
     def __init__(self) -> None:
+        """Initializes the GenerateDataset class."""
+
         DATABASE_URL = os.getenv("DATABASE_URL")
         self.elevator = ElevatorStateManager(database_url=DATABASE_URL)
         self.load_elevator_variables()
 
     def load_elevator_variables(self):
+        """Loads elevator-related variables from a JSON file."""
         try:
             with open("elevator_variables.json", "r") as json_file:
                 data = json.load(json_file)
@@ -123,8 +148,7 @@ class GenerateDataset:
             raise ValueError(f"Error loading elevator variables: {str(e)}")
 
     def floor_weights_mapping(self):
-        # Map floor types to capacities
-
+        """Maps floor types to weights based on room capacities."""
         floor_capacities_mapping = {
             floor: self.floor_capacities.get(
                 self.floor_types.get(str(floor), "Residential")
@@ -155,13 +179,15 @@ class GenerateDataset:
         print("self.weight_list", self.weight_list)
 
     def pick_random_floor_weighted(self):
+        """Picks a random floor based on weights assigned to each floor."""
+
         random_floor = random.choices(
             range(1, self.floor_number + 1), weights=self.weight_list
         )[0]
         return random_floor
 
     def pick_next_door(self):
-        # Ensure demand_floor is different from next_floor
+        """Picks the next floor, ensuring it is different from the demand floor."""
         while True:
             next_floor = random.choices(
                 range(1, self.floor_number + 1), weights=self.weight_list
@@ -171,6 +197,8 @@ class GenerateDataset:
         return next_floor
 
     def obtain_table_last_state(self):
+        """Obtains the last recorded elevator state from the database or generates initial values."""
+
         last_state = self.elevator.get_last_elevator_state()
 
         if last_state:
@@ -183,6 +211,8 @@ class GenerateDataset:
             self.start_time = datetime.today()
 
     def calculate_interval_minutes(self):
+        """Calculates the time interval in minutes between elevator states."""
+
         current_floor_distance = abs(self.current_floor - self.demand_floor)
         current_floor_interval_lag = (
             self.min_time_interval_seconds
@@ -223,6 +253,8 @@ class GenerateDataset:
         return interval_minutes
 
     def generate_elevator_states(self):
+        """Generates elevator states based on specified parameters and stores them in the database."""
+
         self.load_elevator_variables()
         self.floor_weights_mapping()
         self.obtain_table_last_state()
