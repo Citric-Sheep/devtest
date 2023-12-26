@@ -1,11 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import JSONResponse
-from crud_elevator import (
-    ElevatorStateManager,
-)  # Assuming you have this module in the same directory
-from generate_dataset import (
-    GenerateDataset,
-)  # Rename your existing code to generate_dataset.py
+from fastapi.responses import JSONResponse, FileResponse
+from crud_elevator import ElevatorStateManager
+from generate_dataset import GenerateDataset
 from sqlalchemy import create_engine, inspect
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
@@ -15,13 +11,17 @@ import logging
 import pandas as pd
 import os
 
-
+# Load environment variables
 load_dotenv()
 
+# Initialize FastAPI app
 app = FastAPI()
 
+# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Set up database connection
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 
@@ -29,12 +29,18 @@ inspector = inspect(engine)
 if not inspector.has_table("elevator_state"):
     Base.metadata.create_all(bind=engine)
 
+# Initialize ElevatorStateManager and GenerateDataset instances
 elevator = ElevatorStateManager(database_url=DATABASE_URL)
 generator = GenerateDataset()
 
 
 @app.get("/run-generator")
 async def run_generator():
+    """Endpoint to run the elevator state generator.
+
+    Returns:
+        JSONResponse: A response indicating the success or failure of the generator execution.
+    """
     try:
         generator.generate_elevator_states()
         return JSONResponse(
@@ -48,6 +54,11 @@ async def run_generator():
 
 @app.get("/delete-all-rows")
 async def delete_all_rows():
+    """Endpoint to delete all elevator state rows from the database.
+
+    Returns:
+        JSONResponse: A response indicating the success or failure of the deletion operation.
+    """
     try:
         elevator.delete_all_elevator_states()
         return JSONResponse(
@@ -61,6 +72,11 @@ async def delete_all_rows():
 
 @app.get("/get-all-rows")
 async def get_all_rows():
+    """Endpoint to retrieve all elevator state rows from the database.
+
+    Returns:
+        JSONResponse: A response containing the retrieved rows or an error message.
+    """
     try:
         all_rows = elevator.get_all_elevator_states()
         if not all_rows:
@@ -74,6 +90,14 @@ async def get_all_rows():
 
 @app.get("/save-to-csv")
 async def save_to_csv(csv_filename: str = Query("elevator_states.csv")):
+    """Endpoint to save all elevator state rows to a CSV file and allow users to download it.
+
+    Args:
+        csv_filename (str): The desired name for the CSV file.
+
+    Returns:
+        FileResponse: A response containing the CSV file for download or an error message.
+    """
     try:
         all_rows = elevator.get_all_elevator_states()
         if not all_rows:

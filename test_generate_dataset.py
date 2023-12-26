@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 
 # Load testing environment variables
-load_dotenv(".env.test")
 
 
 @pytest.fixture
