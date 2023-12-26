@@ -1,10 +1,11 @@
 from sqlalchemy import create_engine
 from datetime import datetime
 from models import ElevatorState
-from sqlalchemy.orm import  sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
 from dotenv import load_dotenv
 import os
+
 
 # Create a session
 class ElevatorStateManager:
@@ -21,20 +22,31 @@ class ElevatorStateManager:
             return None
 
         if not all((current_floor, demand_floor, next_floor)):
-            print("Invalid input: current_floor, demand_floor, and next_floor cannot be None or empty.")
+            print(
+                "Invalid input: current_floor, demand_floor, and next_floor cannot be None or empty."
+            )
             return None
 
-        new_state = ElevatorState(current_floor=current_floor, demand_floor=demand_floor, next_floor=next_floor, call_datetime=date)
+        new_state = ElevatorState(
+            current_floor=current_floor,
+            demand_floor=demand_floor,
+            next_floor=next_floor,
+            call_datetime=date,
+        )
         self.session.add(new_state)
         self.session.commit()
         return new_state
+
     def get_last_elevator_state(self):
         if self.session.query(ElevatorState).count() == 0:
             print("No elevator states found in the database.")
             return None
 
-        last_state = self.session.query(ElevatorState).order_by(desc(ElevatorState.id)).first()
+        last_state = (
+            self.session.query(ElevatorState).order_by(desc(ElevatorState.id)).first()
+        )
         return last_state
+
     def get_all_elevator_states(self):
         return self.session.query(ElevatorState).all()
 
@@ -75,32 +87,32 @@ class ElevatorStateManager:
         except Exception as e:
             self.session.rollback()
             print(f"Error deleting all rows: {e}")
-            
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     load_dotenv()
     DATABASE_URL = os.getenv("DATABASE_URL")
     manager = ElevatorStateManager(database_url=DATABASE_URL)
     #  # Read again after deletion
     # all_states_after_deletion = manager.get_all_elevator_states()
     # print("All states after deletion:", all_states_after_deletion)
-    
+
     # manager.delete_all_elevator_states()
-    
+
     # all_states_after_deletion = manager.get_all_elevator_states()
     # print("All states after deletion:", all_states_after_deletion)
-    
-    
-    
+
     # Create
-    created_state = manager.create_elevator_state(current_floor=5, demand_floor=3,next_floor= 1,date_str="2023-12-21 08:30:00" )
+    created_state = manager.create_elevator_state(
+        current_floor=5, demand_floor=3, next_floor=1, date_str="2023-12-21 08:30:00"
+    )
     print("Created state:", created_state)
 
     # Read
     all_states = manager.get_all_elevator_states()
     print("All states:", all_states)
     last_id = manager.get_last_elevator_state().id
-    
+
     # Update
     manager.update_elevator_state_state(state_id=last_id, current_floor=8)
     updated_state = manager.session.query(ElevatorState).filter_by(id=1).first()
