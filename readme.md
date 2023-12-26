@@ -302,3 +302,12 @@ Retrieves all elevator state rows from the database.
 ### Endpoint: `/save-to-csv`
 **Description:**  
 Saves all elevator state rows to a CSV file and allows users to download it.
+
+
+## How to use it to train a ML model:
+
+To enhance the training of a machine learning (ML) model, it is advisable to engage in thoughtful feature engineering. Extracting a diverse set of features, including Time-related Features, Distance Features between floors, Time Spent Features, Directional Features, Time Series Split, Lag Features, Rolling Window Statistics, and more, can significantly contribute to the model's predictive capabilities.
+
+After performing feature engineering, a strategic choice for the target variable is to use demand_floor. By designating demand_floor as the target variable, the model aims to predict the most probable floor in demand, guiding the elevator to rest optimally at that position.
+
+Moreover, to effectively capture the temporal dependencies inherent in the dataset, it is recommended to employ models designed for time series analysis. Autoregressive models like ARIMA or SARIMA provide a robust framework for understanding time series patterns. Alternatively, models like Recurrent Neural Networks (RNNs) or Long Short-Term Memory (LSTM) Networks, with their capacity to capture sequential dependencies, can offer valuable insights into the temporal dynamics of the elevator operations.
