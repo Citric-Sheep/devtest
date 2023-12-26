@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse, FileResponse
-from crud_elevator import ElevatorStateManager
-from generate_dataset import GenerateDataset
+from scr.crud_elevator import ElevatorStateManager
+from scr.generate_dataset import GenerateDataset
 from sqlalchemy import create_engine, inspect
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
-from db import Base
+from scr.db import Base
 import uvicorn
 import logging
 import pandas as pd
