@@ -1,9 +1,8 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse, FileResponse
 from scr.crud_elevator import ElevatorStateManager
 from scr.generate_dataset import GenerateDataset
 from sqlalchemy import create_engine, inspect
-from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from scr.db import Base
 import uvicorn
@@ -102,7 +101,7 @@ async def save_to_csv(csv_filename: str = Query("elevator_states.csv")):
         all_rows = elevator.get_all_elevator_states()
         if not all_rows:
             return JSONResponse(
-                content={"message": f"No data in the database"}, status_code=500
+                content={"message": "No data in the database"}, status_code=500
             )
 
         # Convert rows to a DataFrame
