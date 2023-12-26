@@ -1,10 +1,7 @@
 from scr.generate_dataset import GenerateDataset
-from datetime import datetime, timedelta
+from datetime import datetime
 import pytest
-import os
-from dotenv import load_dotenv
 
-# Load testing environment variables
 
 
 @pytest.fixture
