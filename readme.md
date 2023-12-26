@@ -217,7 +217,7 @@ all the floors that arent mentioned are per default a residential floor.
 * random_minutes_range (dict): Range of random minutes added to intervals. generated data has a delta of time between each row or state of the elevator, that delta of time is a random number that is between the range set in this variable:
   ```
   "random_minutes_range": {"min": 0, "max": 5}
-      ```
+  ```
 
 in this case it is generating data between 0 minutes and 5 minutes, so it means that in the data generation you will only find changes of time as maximum as 5 minutes, meaning that a people uses the elevator 5 minutes after other person used it.
 of course if it is peak_time, that range is multiplied by the peak_multiplier, making it an smaller range of time.
