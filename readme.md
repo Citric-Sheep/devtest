@@ -8,8 +8,14 @@
 <h3 align="center">Elevator Data Generator</h3>
 
   <p >
-This project is a solution for the elevator data generator problem proposed in the following github repository: https://github.com/Citric-Sheep/devtest
+This project is a solution for the elevator data generator problem proposed in the following github repository: https://github.com/Citric-Sheep/devtest, it reproduces data in csv format with the following columns:
+current_floor, demand_floor, next_floor, call_datetime
+the columsn aims to emulate a complete operation for a person.
+
+so the elevator is in a specific floor at the beggining of the operation it is in the "current floor", then the person that wants to use the elevator calls is from the "demand_floor" and once it is in the elevator y moves to the "next_floor", and that operation happens at a certain hours. 
   </p>
+
+
 </div>
 
 
@@ -223,6 +229,14 @@ in this case it is generating data between 0 minutes and 5 minutes, so it means 
 of course if it is peak_time, that range is multiplied by the peak_multiplier, making it an smaller range of time.
 
 
+  ### Bussiness rules:
+
+  - The next floor is generated randomly and can not be the same as the demanded floor
+  - The probability for the demanded_floor and the next_floor are weighted by the floor_type and floor_capacities
+  - The datetime is choosen randomly but if it is a peak hour then the gaps are smaller.
+  - Each time that the generation of data method is called it searches the last state of the table and based on that data reproduces the new data, if there is no data, it produces new data randomly and the starting date is the actual date of the computers user.
+  - the elevator_variables.json can be modified at any time and in the next generation action it will take into account the last changes.
+  
 
 ### Using the FastAPI Service
 
