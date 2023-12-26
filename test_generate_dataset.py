@@ -1,6 +1,5 @@
 from generate_dataset import GenerateDataset
 from datetime import datetime, timedelta
-from pytest_mock import mocker
 import pytest
 
 @pytest.fixture

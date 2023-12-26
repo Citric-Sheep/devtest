@@ -6,4 +6,5 @@ uvicorn
 pandas
 pylint
 pytest
+pytest-mock
 black
