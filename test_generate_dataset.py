@@ -1,6 +1,11 @@
 from generate_dataset import GenerateDataset
 from datetime import datetime, timedelta
 import pytest
+import os
+from dotenv import load_dotenv
+
+# Load testing environment variables
+load_dotenv(".env.test")
 
 @pytest.fixture
 def generator():
