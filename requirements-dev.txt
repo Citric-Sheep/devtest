@@ -1,0 +1,4 @@
+fastapi==0.108.0
+SQLAlchemy==2.0.24
+pytest
+httpx
