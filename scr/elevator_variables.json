@@ -1,23 +1,28 @@
 {
   "floor_capacities": {
-    "Residential": 20,
+    "Residential": 40,
     "Social": 100,
     "entrance": 200,
-    "Company": 40
+    "Company": 40,
+    "parking": 50
   },
   "floor_types": {
-    "1": "entrance",
-    "10": "Social",
-    "2": "Company"
+    "0": "entrance",
+    "9": "Social",
+    "1": "Company",
+    "-1": "parking",
+    "-2" :"parking"
   },
   "rows_generated": 10,
   "floor_number": 10,
+  "negative_floor_number": -2,
   "min_time_interval_seconds": 10,
   "max_time_interval_seconds": 30, 
   "interval_per_floor_seconds": 4,
   "peak_hours":[{"start": 6, "end": 8},
         {"start": 12, "end": 14},
         {"start": 17, "end": 20}],
+  
   "peak_multiplier": 0.5,
   "random_minutes_range": {"min": 0, "max": 5}
   

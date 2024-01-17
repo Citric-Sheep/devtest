@@ -1,5 +1,5 @@
 # models.py
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, Float
 from scr.db import Base
 
 
@@ -7,9 +7,9 @@ class ElevatorState(Base):
     __tablename__ = "elevator_state"
 
     id = Column(Integer, primary_key=True, index=True)
-    current_floor = Column(Integer)
-    demand_floor = Column(Integer)
-    next_floor = Column(Integer)
+    current_floor = Column(Float)
+    demand_floor = Column(Float)
+    next_floor = Column(Float)
     call_datetime = Column(DateTime(timezone=True))
 
     def __repr__(self):

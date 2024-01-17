@@ -46,7 +46,7 @@ class ElevatorStateManager:
             print("Invalid date format. Please provide a valid date.")
             return None
 
-        if not all((current_floor, demand_floor, next_floor)):
+        if( current_floor == None or demand_floor == None or next_floor == None):
             print(
                 "Invalid input: current_floor, demand_floor, and next_floor cannot be None or empty."
             )

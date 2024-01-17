@@ -51,7 +51,7 @@ async def run_generator():
         )
 
 
-@app.get("/delete-all-rows")
+@app.delete("/delete-all-rows")
 async def delete_all_rows():
     """Endpoint to delete all elevator state rows from the database.
 
@@ -120,4 +120,4 @@ async def save_to_csv(csv_filename: str = Query("elevator_states.csv")):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info", reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")

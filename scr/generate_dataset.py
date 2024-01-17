@@ -85,6 +85,11 @@ class GenerateDataset:
             # Validate floor_number
             if not isinstance(data["floor_number"], int) or data["floor_number"] <= 0:
                 raise ValueError("Invalid 'floor_number' value.")
+            
+            # Validate negative_floor_number
+            if not isinstance(data["negative_floor_number"], int) or data["negative_floor_number"] > 0:
+                raise ValueError("Invalid 'negative_floor_number' value.")
+
 
             # Validate time intervals
             for interval_key in [
@@ -137,12 +142,14 @@ class GenerateDataset:
             self.floor_types = data["floor_types"]
             self.rows_generated = data["rows_generated"]
             self.floor_number = data["floor_number"]
+            self.negative_floor_number = data["negative_floor_number"]
             self.min_time_interval_seconds = data["min_time_interval_seconds"]
             self.max_time_interval_seconds = data["max_time_interval_seconds"]
             self.interval_per_floor_seconds = data["interval_per_floor_seconds"]
             self.peak_hours = data["peak_hours"]
             self.peak_multiplier = data["peak_multiplier"]
             self.random_minutes_range = data["random_minutes_range"]
+            print("self.negative_floor_number",self.negative_floor_number)
             print("all variables were loaded correctly")
         except (json.JSONDecodeError, FileNotFoundError) as e:
             raise ValueError(f"Error loading elevator variables: {str(e)}")
@@ -153,7 +160,7 @@ class GenerateDataset:
             floor: self.floor_capacities.get(
                 self.floor_types.get(str(floor), "Residential")
             )
-            for floor in range(1, self.floor_number + 1)
+            for floor in range(self.negative_floor_number, self.floor_number)
         }
         # Calculate weights based on room capacities
         min_capacity = min(floor_capacities_mapping.values())
@@ -172,17 +179,18 @@ class GenerateDataset:
         # Normalize weights so that the sum is 1
         total_weight = sum(floor_weights_mapping.values())
         floor_weights_mapping = {
-            floor: weight / total_weight
+            floor: round(weight / total_weight,3)
             for floor, weight in floor_weights_mapping.items()
         }
         self.weight_list = list(floor_weights_mapping.values())
-        print("self.weight_list", self.weight_list)
-
+        print("self.weight_list",self.weight_list)
+        
+        
     def pick_random_floor_weighted(self):
         """Picks a random floor based on weights assigned to each floor."""
 
         random_floor = random.choices(
-            range(1, self.floor_number + 1), weights=self.weight_list
+            range(self.negative_floor_number, self.floor_number), weights=self.weight_list
         )[0]
         return random_floor
 
@@ -190,8 +198,9 @@ class GenerateDataset:
         """Picks the next floor, ensuring it is different from the demand floor."""
         while True:
             next_floor = random.choices(
-                range(1, self.floor_number + 1), weights=self.weight_list
+                range(self.negative_floor_number, self.floor_number ), weights=self.weight_list
             )[0]
+            print("next_floor",next_floor)
             if next_floor != self.demand_floor:
                 break
         return next_floor
@@ -215,8 +224,7 @@ class GenerateDataset:
 
         current_floor_distance = abs(self.current_floor - self.demand_floor)
         current_floor_interval_lag = (
-            self.min_time_interval_seconds
-            if current_floor_distance <= 1
+            self.min_time_interval_seconds if current_floor_distance <= 1 
             else min(
                 self.max_time_interval_seconds,
                 current_floor_distance * self.interval_per_floor_seconds,
@@ -224,7 +232,7 @@ class GenerateDataset:
         ) / 60  # Convert seconds to minutes
 
         # Calculate time interval based on the absolute difference between next_floor and demand_floor
-        next_floor_distance = abs(self.next_floor - self.demand_floor)
+        next_floor_distance = abs(self.next_floor - self.demand_floor) 
         next_floor_interval_lag = (
             self.min_time_interval_seconds
             if next_floor_distance <= 1
@@ -264,11 +272,11 @@ class GenerateDataset:
             interval_minutes = self.calculate_interval_minutes()
 
             call_datetime = self.start_time + timedelta(minutes=interval_minutes)
-
+            print(self.current_floor,self.demand_floor,self.next_floor)
             created_state = self.elevator.create_elevator_state(
-                current_floor=self.current_floor,
-                demand_floor=self.demand_floor,
-                next_floor=self.next_floor,
+                current_floor=int(self.current_floor),
+                demand_floor=int(self.demand_floor),
+                next_floor=int(self.next_floor),
                 date_str=call_datetime.strftime("%Y-%m-%d %H:%M:%S"),
             )
             print("created_state: ", created_state)
