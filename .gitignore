@@ -1,0 +1,6 @@
+# BEGIN: /c:/Users/gabriel/source/repos/devtest/.gitignore
+*.pyc
+__pycache__/
+venv/
+.env
+# END: /c:/Users/gabriel/source/repos/devtest/.gitignore
