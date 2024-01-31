@@ -1,7 +1,8 @@
-from typing import List
-from src.entities.smart_elevator import SmartElevator
 import json
 import uuid
+from typing import List
+
+from src.entities.smart_elevator import SmartElevator
 
 
 class ElevatorDatabase:

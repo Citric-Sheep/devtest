@@ -1,5 +1,3 @@
-import pytest
-
 from src.entities.smart_elevator import SmartElevator
 
 

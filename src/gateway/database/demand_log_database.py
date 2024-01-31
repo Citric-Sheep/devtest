@@ -1,7 +1,8 @@
-from typing import List
-import uuid
-from src.entities.smart_elevator import DemandLog
 import json
+import uuid
+from typing import List
+
+from src.entities.smart_elevator import DemandLog
 
 
 class DemandLogDatabase:

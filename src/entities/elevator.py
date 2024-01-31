@@ -1,6 +1,8 @@
 import time
 from typing import Optional
+
 from pydantic import BaseModel
+
 from .enumerations.elevator_status import ElevatorStatus
 
 

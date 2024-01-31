@@ -1,7 +1,8 @@
 from sanic import Blueprint
 from sanic.response import json
-from src.gateway.database.elevator_database import ElevatorDatabase
+
 from src.gateway.database.demand_log_database import DemandLogDatabase
+from src.gateway.database.elevator_database import ElevatorDatabase
 
 elevator_bp = Blueprint("elevators", url_prefix="elevators", version=1)
 
