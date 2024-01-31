@@ -1,6 +1,64 @@
-# Dev Test
+![banner](readme_assets/banner.png)
+# Smart Elevator Project
+This is the solution for a challenge proposed by Citric Sheep, aiming to create an intelligent system for elevators. You can have a more detailed description of the challenge at the end of this readme.
 
-## Elevators
+## The solution
+The intelligent system aims to choose the optimal floor for the elevator to rest, based on the elevator's call history. The system consists of a server that receives elevator calls and a database that stores these calls.
+
+For this purpose, a heuristic algorithm has been proposed. Based on the call history, the algorithm selects the floor that has been called the most within a one-hour interval. Minimizing the following cost function:
+
+\[ \text{cost(resting\_floor)} = \sum_{i=1}^{n} \text{calls}_{x_i} \times \lvert x_i - \text{resting\_floor} \rvert \]
+
+Where \(\text{calls}_{x_i}\) is the number of calls for floor \(x_i\) within the one-hour interval, and \(n\) is the total number of floors.
+
+The algorithm tests all possible floors and chooses the one that minimizes the cost function
+
+For example, consider the following call history:
+```
+1, 1, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5
+```
+
+Organizing it into a call vector:
+```
+[3, 5, 6, 5, 1]
+```
+
+The algorithm tests all possible floors and chooses the one that minimizes the cost function. In this case, floor 3 (index 2) is the one that minimizes the cost function.
+
+# How to run
+
+## Setting up the environment
+Create a virtual environment
+```bash
+python3.11 -m venv env
+```
+
+Activate the virtual environment
+```bash
+source env/bin/activate
+```
+
+Install the requirements
+```bash
+pip install -r requirements.txt
+```
+
+## Running the tests
+```bash
+pytest .
+```
+
+## Running the application
+```bash
+python main.py
+```
+
+## Running the server
+```bash
+python server.py
+```
+
+## The Challenge Description
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
 
