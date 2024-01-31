@@ -6,10 +6,11 @@ This is the solution for a challenge proposed by Citric Sheep, aiming to create 
 The intelligent system aims to choose the optimal floor for the elevator to rest, based on the elevator's call history. The system consists of a server that receives elevator calls and a database that stores these calls.
 
 For this purpose, a heuristic algorithm has been proposed. Based on the call history, the algorithm selects the floor that has been called the most within a one-hour interval. Minimizing the following cost function:
+```math
+\text{cost(resting\_floor)} = \sum_{i=1}^{n} \text{calls}_{x_i} \times \lvert x_i - \text{resting\_floor} \rvert
+```
 
-\[ \text{cost(resting\_floor)} = \sum_{i=1}^{n} \text{calls}_{x_i} \times \lvert x_i - \text{resting\_floor} \rvert \]
-
-Where \(\text{calls}_{x_i}\) is the number of calls for floor \(x_i\) within the one-hour interval, and \(n\) is the total number of floors.
+Where $\text{calls}_{x_i}\$ is the number of calls for floor $x_i$ within the one-hour interval, and $n$ is the total number of floors.
 
 The algorithm tests all possible floors and chooses the one that minimizes the cost function
 
