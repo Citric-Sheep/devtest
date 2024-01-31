@@ -61,6 +61,10 @@ python main.py
 python server.py
 ```
 
+You can test the server endpoints using a collection of requests in the request_collection.json file. You can use programs like Insomnia or Postman.
+
+![insomia](readme_assets/insomia.png)
+
 ## The Challenge Description
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
