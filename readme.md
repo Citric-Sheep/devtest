@@ -26,6 +26,8 @@ Organizing it into a call vector:
 
 The algorithm tests all possible floors and chooses the one that minimizes the cost function. In this case, floor 3 (index 2) is the one that minimizes the cost function.
 
+The minimization strategy over a one-hour timeframe enables the algorithm to anticipate trends throughout the day. For example, in a residential building elevator, there might be an increased demand around 6 p.m. as people return from work. Similarly, in a commercial building, there could be a shift of people from floor A to floor B during lunchtime.
+
 # How to run
 
 ## Setting up the environment
