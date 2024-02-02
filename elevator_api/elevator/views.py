@@ -207,7 +207,7 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Elevator.DoesNotExist:
-            return Response({'Status': 'Elevator not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'Status': 'call not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['post'])
   def update_call(self, request, *args, **kwargs):
     """
@@ -222,7 +222,7 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except ElevatorCall.DoesNotExist:
-        return Response({'error': 'ElevatorCall not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'call not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['get'])
   def get_calls(self, request, *args, **kwargs):
         """

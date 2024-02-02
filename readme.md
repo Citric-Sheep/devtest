@@ -264,7 +264,7 @@ The `ElevatorCallViewSet` is a Django Rest Framework ViewSet designed for CRUD o
   - Body: Serialized data of the created elevator call.
 - **Error Response**:
   - Status Code: 404 Not Found
-  - Body: `{ "Status": "Elevator not found" }` (if the specified elevator ID is not found)
+  - Body: `{ "Status": "call not found" }` (if the specified elevator ID is not found)
   - Status Code: 400 Bad Request
   - Body: `{ "Status": "Origin or target floor is out of bounds" }` (if origin or target floor is out of bounds)
 
@@ -298,7 +298,7 @@ In case of errors, the response body will contain an `error` field providing inf
 
 ## Overview
 
-The `ElevatorViewSet` is a Django Rest Framework ViewSet designed for CRUD operations on instances of the `Elevator` model. It provides endpoints for creating, deleting, updating, and retrieving individual elevators, as well as getting a list of all elevators. Additionally, it generates the data for the ML model. The endpoint prefix to access the `ElevatorVieSet` is `/elevator/`
+The `ElevatorViewSet` is a Django Rest Framework ViewSet designed for CRUD operations on instances of the `Elevator` model. It provides endpoints for creating, deleting, updating, and retrieving individual elevators, as well as getting a list of all elevators. Additionally, it generates the data for the ML model. The endpoint prefix to access the `ElevatorViewSet` is `/elevator/`
 
 ## Endpoints
 
