@@ -62,6 +62,52 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Elevator.DoesNotExist:
         return Response({'error': 'Calls not found'}, status=status.HTTP_404_NOT_FOUND)
+  @action(detail=False, methods=['post'])
+  def call_elevator(self, request, *args, **kwargs):
+    elevator_call_id = request.data.get('call_id')
+    elevator_call = ElevatorCall.objects.get(pk=elevator_call_id)
+    elevator_id = request.data.get('elevator_id')
+    elevator = Elevator.objects.get(pk=elevator_id)
+    person_id = request.data.get('person_id')
+    person = Person.objects.get(pk=person_id)
+    movement_starting_floor = elevator.current_floor
+    floors_traveled = 0
+    movement_start_time = datetime.now()
+    if elevator_call.origin_floor > elevator.current_floor:
+        print(f"The elevator is below the requested floor {elevator_call.origin_floor}, it is currently in floor {elevator.current_floor}, mooving up to get to the origin floor")
+        floors_traveled += self.move_elevator(elevator.current_floor,elevator_call.origin_floor,elevator)
+        print(f"The elevator arrived at the requested origin floor {elevator_call.origin_floor}, mooving to the requested floor")
+        floors_traveled += self.move_elevator(elevator.current_floor,elevator_call.target_floor,elevator)
+        movement_end_time = datetime.now()
+        time_delta = movement_end_time -movement_start_time
+    elif elevator_call.origin_floor < elevator.current_floor:
+        print(f"The elevator is above the requested floor {elevator_call.origin_floor}, it is currently in floor {elevator.current_floor}, mooving down to get to the origin floor")
+        floors_traveled += self.move_elevator(elevator.current_floor,elevator_call.origin_floor,elevator)
+        print(f"The elevator arrived at the requested origin floor {elevator_call.origin_floor}, mooving to the requested floor")
+        floors_traveled += self.move_elevator(elevator.current_floor,elevator_call.target_floor,elevator)
+        movement_end_time = datetime.now()
+        time_delta = movement_end_time -movement_start_time
+    elif elevator.current_floor == elevator_call.origin_floor:
+        print(f"The elevator is already on the requested floor | Floor number {elevator.current_floor}")
+        floors_traveled += self.move_elevator(elevator.current_floor,elevator_call.target_floor,elevator)
+        movement_end_time = datetime.now()
+        time_delta = movement_end_time -movement_start_time
+    new_movement = Movement.objects.create(
+        elevator = elevator,
+        person = person,
+        elevator_call = elevator_call,
+        movement_started_at = movement_start_time,
+        movement_finished_at = movement_end_time,
+        movement_origin_floor = movement_starting_floor,
+        movement_final_floor = elevator_call.target_floor,
+        call_origin_floor = elevator_call.origin_floor,
+        call_target_floor = elevator_call.target_floor,
+        total_traveled_floors = floors_traveled,
+        total_movement_time_ms =time_delta,
+        avg_movement_speed_floor_by_seconds = self.calculate_avg_movement_speed(floors_traveled,time_delta.total_seconds())
+    )
+    movement_serializer = MovementSerializer(new_movement)
+    return Response({'Status': f'Finished the elevator movement, the execution genereted the following movement', 'movement':movement_serializer.data}, status=status.HTTP_200_OK)
 class ElevatorCallViewSet(viewsets.ModelViewSet):
   queryset = ElevatorCall.objects.all()
   serializer_class = ElevatorCallSerializer
