@@ -108,6 +108,40 @@ class ElevatorViewSet(viewsets.ModelViewSet):
     )
     movement_serializer = MovementSerializer(new_movement)
     return Response({'Status': f'Finished the elevator movement, the execution genereted the following movement', 'movement':movement_serializer.data}, status=status.HTTP_200_OK)
+  def move_elevator(self,origin_floor,target_floor,elevator):
+    if origin_floor < target_floor:
+        ## Moove up
+        self.move_up(target_floor,elevator)
+        return target_floor - origin_floor
+    elif origin_floor > target_floor:
+        ## Moove down
+        self.move_down(target_floor,elevator)
+        return origin_floor-target_floor
+  def move_up(self,target_floor,elevator):
+    ## Moove up
+    floor = elevator.current_floor
+    while floor != target_floor:
+        print(f"mooving up to floor {target_floor}, currently in floor {floor}")
+        time.sleep(random.uniform(0, elevator.elevator_max_speed))
+        floor +=1
+    print(f"arrived at target floor {target_floor}")
+    elevator.current_floor = floor
+    elevator.save()
+    return Response({'Status': 'Arrived at the target floor'}, status=status.HTTP_200_OK)
+  def move_down(self,target_floor,elevator):
+    floor = elevator.current_floor
+    while floor != target_floor:
+        print(f"mooving down to floor {target_floor}, currently in floor {floor}")
+        time.sleep(random.uniform(0, elevator.elevator_max_speed))
+        floor -=1
+    print(f"arrived at target floor {target_floor}")
+    elevator.current_floor = floor
+    elevator.save()
+    return Response({'Status': 'Arrived at the target floor'}, status=status.HTTP_200_OK)
+  def calculate_avg_movement_speed(self,total_traveled_floors,total_movement_time):
+    print('Traveled time in seconds', total_movement_time, 'total_traveled_floors', total_traveled_floors)
+    average_speed = total_traveled_floors / total_movement_time
+    return round(average_speed,4)
 class ElevatorCallViewSet(viewsets.ModelViewSet):
   queryset = ElevatorCall.objects.all()
   serializer_class = ElevatorCallSerializer
