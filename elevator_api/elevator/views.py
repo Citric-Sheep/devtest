@@ -171,3 +171,58 @@ class PersonViewSet(viewsets.ModelViewSet):
     serializer = PersonSerializer(people, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+class MovementViewSet(viewsets.ModelViewSet):
+  """
+  ViewSet to CRUD instances of a Movement object
+  """
+  queryset = Movement.objects.all()
+  serializer_class = MovementSerializer
+  @action(detail=False, methods=['get'])
+  def get_movement(self, request, *args, **kwargs):
+    try:
+        movement_id = request.query_params.get('id')
+        movement = Movement.objects.get(pk=movement_id)
+        serializer = MovementSerializer(movement)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Movement.DoesNotExist:
+        return Response({'error': 'Movement not found'}, status=status.HTTP_404_NOT_FOUND)
+  @action(detail=False, methods=['delete'])
+  def delete_movement(self, request, *args, **kwargs):
+    try:
+        movement_id = request.query_params.get('id')
+        movement = Movement.objects.get(pk=movement_id)
+        movement.delete()
+        return Response({'message': 'Movement deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except Movement.DoesNotExist:
+        return Response({'error': 'Movement not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+  @action(detail=False, methods=['post'])
+  def create_movement(self, request, *args, **kwargs):
+    response = super().create(request, *args, **kwargs)
+
+    if response.status_code == status.HTTP_201_CREATED:
+        return Response({'message': 'Movement created successfully'}, status=status.HTTP_201_CREATED)
+    else:
+        return response
+  @action(detail=False, methods=['post'])
+  def update_movement(self, request, *args, **kwargs):
+    try:
+        movement_id = request.query_params.get('id')
+        movement = Movement.objects.get(pk=movement_id)
+        serializer = MovementSerializer(movement, data=request.data)
+        if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Movement.DoesNotExist:
+        return Response({'error': 'Movement not found'}, status=status.HTTP_404_NOT_FOUND)
+  @action(detail=False, methods=['get'])
+  def get_movements(self, request, *args, **kwargs):
+    try:
+        movement = Movement.objects.all()
+        serializer = MovementSerializer(movement, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Movement.DoesNotExist:
+        return Response({'error': 'Movements not found'}, status=status.HTTP_404_NOT_FOUND)
