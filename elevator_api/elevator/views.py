@@ -12,10 +12,14 @@ from datetime import datetime, timedelta
 
 
 class ElevatorViewSet(viewsets.ModelViewSet):
+  """
+        ViewSet to perform CRUD operations on instances of the Elevator model.
+  """
   queryset = Elevator.objects.all()
   serializer_class = ElevatorSerializer
   @action(detail=False, methods=['get'])
   def get_elevator(self, request, *args, **kwargs):
+    """Retrieve details of a specific elevator using its ID."""
     try:
         elevator_id = request.query_params.get('id')
         #elevator_id = kwargs.get('pk')
@@ -26,6 +30,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Elevator not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['delete'])
   def delete_elevator(self, request, *args, **kwargs):
+    """Delete an elevator by providing the elevator's ID."""
     try:
         elevator_id = request.data.get('id')
         elevator = Elevator.objects.get(pk=elevator_id)
@@ -37,6 +42,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   @action(detail=False, methods=['post'])
   def create_elevator(self, request, *args, **kwargs):
+    """Create a new elevator instance."""
     response = super().create(request, *args, **kwargs)
     if response.status_code == status.HTTP_201_CREATED:
         return Response({'message': 'Elevator created successfully'}, status=status.HTTP_201_CREATED)
@@ -44,6 +50,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return response
   @action(detail=False, methods=['post'])
   def update_elevator(self, request, *args, **kwargs):
+    """Update details of an elevator by providing the elevator's ID and updated data."""
     try:
         elevator_id = request.data.get('id')
         elevator = Elevator.objects.get(pk=elevator_id)
@@ -56,6 +63,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Elevator not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['get'])
   def get_elevators(self, request, *args, **kwargs):
+    """Retrieve a list of all elevators."""
     try:
         elevators = Elevator.objects.all()
         serializer = ElevatorSerializer(elevators, many=True)
@@ -64,6 +72,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Calls not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['post'])
   def call_elevator(self, request, *args, **kwargs):
+    """Initiate an elevator movement based on an elevator call."""
     elevator_call_id = request.data.get('call_id')
     elevator_call = ElevatorCall.objects.get(pk=elevator_call_id)
     elevator_id = request.data.get('elevator_id')
@@ -109,6 +118,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
     movement_serializer = MovementSerializer(new_movement)
     return Response({'Status': f'Finished the elevator movement, the execution genereted the following movement', 'movement':movement_serializer.data}, status=status.HTTP_200_OK)
   def move_elevator(self,origin_floor,target_floor,elevator):
+    """Move the elevator from the origin floor to the target floor."""
     if origin_floor < target_floor:
         ## Moove up
         self.move_up(target_floor,elevator)
@@ -118,6 +128,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
         self.move_down(target_floor,elevator)
         return origin_floor-target_floor
   def move_up(self,target_floor,elevator):
+    """Move the elevator up to the target floor."""
     ## Moove up
     floor = elevator.current_floor
     while floor != target_floor:
@@ -129,6 +140,7 @@ class ElevatorViewSet(viewsets.ModelViewSet):
     elevator.save()
     return Response({'Status': 'Arrived at the target floor'}, status=status.HTTP_200_OK)
   def move_down(self,target_floor,elevator):
+    """Move the elevator down to the target floor."""
     floor = elevator.current_floor
     while floor != target_floor:
         print(f"mooving down to floor {target_floor}, currently in floor {floor}")
@@ -139,14 +151,21 @@ class ElevatorViewSet(viewsets.ModelViewSet):
     elevator.save()
     return Response({'Status': 'Arrived at the target floor'}, status=status.HTTP_200_OK)
   def calculate_avg_movement_speed(self,total_traveled_floors,total_movement_time):
+    """Calculate the average movement speed in floors per second."""
     print('Traveled time in seconds', total_movement_time, 'total_traveled_floors', total_traveled_floors)
     average_speed = total_traveled_floors / total_movement_time
     return round(average_speed,4)
 class ElevatorCallViewSet(viewsets.ModelViewSet):
+  """
+    ViewSet to perform CRUD operations on instances of the ElevatorCall model.
+  """
   queryset = ElevatorCall.objects.all()
   serializer_class = ElevatorCallSerializer
   @action(detail=False, methods=['get'])
   def get_call(self, request, *args, **kwargs):
+    """
+        Retrieve details of a specific elevator call using its ID.
+    """
     try:
         call_id = request.query_params.get('id')
         call = ElevatorCall.objects.get(pk=call_id)
@@ -156,6 +175,9 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Call not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['delete'])
   def delete_call(self, request, *args, **kwargs):
+    """
+        Delete an elevator call by providing the call's ID.
+    """
     try:
         call_id = request.data.get('id')
         call = ElevatorCall.objects.get(pk=call_id)
@@ -167,6 +189,9 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   @action(detail=False, methods=['post'])
   def create_call(self, request, *args, **kwargs):
+        """
+        Create a new elevator call instance.
+        """
         elevator_id = request.data.get('elevator')
         try:
             elevator = Elevator.objects.get(pk=elevator_id)
@@ -185,6 +210,9 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
             return Response({'Status': 'Elevator not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['post'])
   def update_call(self, request, *args, **kwargs):
+    """
+        Update details of an elevator call by providing the call's ID and updated data.
+    """
     try:
         call_id = request.query_params.get('id')
         call = ElevatorCall.objects.get(pk=call_id)
@@ -197,17 +225,21 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
         return Response({'error': 'ElevatorCall not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['get'])
   def get_calls(self, request, *args, **kwargs):
+        """
+        Retrieve a list of all elevator calls.
+        """
         calls = ElevatorCall.objects.all()
         serializer = ElevatorCallSerializer(calls, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 class PersonViewSet(viewsets.ModelViewSet):
+  """
+    ViewSet to CRUD instances of a Person object
+  """
   queryset = Person.objects.all()
   serializer_class = PersonSerializer
-  """
-  ViewSet to CRUD instances of a Person object
-  """
   @action(detail=False, methods=['post'])
   def create_person(self, request, *args, **kwargs):
+   """Create a new person instance."""
    serializer = PersonSerializer(data=request.data)
    if serializer.is_valid():
         serializer.save()
@@ -215,6 +247,7 @@ class PersonViewSet(viewsets.ModelViewSet):
    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   @action(detail=False, methods=['delete'])
   def delete_person(self, request, *args, **kwargs):
+    """Delete a person by providing the person's ID."""
     try:
         person_id = request.data.get('id')
         person = Person.objects.get(pk=person_id)
@@ -226,6 +259,7 @@ class PersonViewSet(viewsets.ModelViewSet):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
   @action(detail=False, methods=['get'])
   def get_person(self, request, *args, **kwargs):
+    """Retrieve details of a specific person using their ID."""
     try:
         person_id = request.query_params.get('id')
         person = Person.objects.get(pk=person_id)
@@ -235,6 +269,7 @@ class PersonViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Person not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['post'])
   def update_person(self, request, *args, **kwargs):
+    """Update details of a person by providing the person's ID and updated data."""
     try:
         person_id = request.data.get('id')
         person = Person.objects.get(pk=person_id)
@@ -247,6 +282,7 @@ class PersonViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Person not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['get'])
   def get_people(self, request, *args, **kwargs):
+    """Retrieve a list of all persons."""
     people = Person.objects.all()
     serializer = PersonSerializer(people, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -259,6 +295,7 @@ class MovementViewSet(viewsets.ModelViewSet):
   serializer_class = MovementSerializer
   @action(detail=False, methods=['get'])
   def get_movement(self, request, *args, **kwargs):
+    """Retrieve details of a specific movement using its ID."""
     try:
         movement_id = request.query_params.get('id')
         movement = Movement.objects.get(pk=movement_id)
@@ -268,6 +305,7 @@ class MovementViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Movement not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['delete'])
   def delete_movement(self, request, *args, **kwargs):
+    """Delete a movement by providing the movement's ID."""
     try:
         movement_id = request.query_params.get('id')
         movement = Movement.objects.get(pk=movement_id)
@@ -280,6 +318,7 @@ class MovementViewSet(viewsets.ModelViewSet):
 
   @action(detail=False, methods=['post'])
   def create_movement(self, request, *args, **kwargs):
+    """Create a new movement instance."""
     response = super().create(request, *args, **kwargs)
 
     if response.status_code == status.HTTP_201_CREATED:
@@ -288,6 +327,7 @@ class MovementViewSet(viewsets.ModelViewSet):
         return response
   @action(detail=False, methods=['post'])
   def update_movement(self, request, *args, **kwargs):
+    """Update details of a movement by providing the movement's ID and updated data."""
     try:
         movement_id = request.query_params.get('id')
         movement = Movement.objects.get(pk=movement_id)
@@ -300,6 +340,7 @@ class MovementViewSet(viewsets.ModelViewSet):
         return Response({'error': 'Movement not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['get'])
   def get_movements(self, request, *args, **kwargs):
+    """Retrieve a list of all movements."""
     try:
         movement = Movement.objects.all()
         serializer = MovementSerializer(movement, many=True)
