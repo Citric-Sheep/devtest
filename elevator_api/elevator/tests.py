@@ -183,9 +183,10 @@ class ElevatorViewSetTestCase(TestCase):
         call1 = ElevatorCall.objects.create(elevator=elevator, origin_floor=0, target_floor=2,person = person)
         response = self.client.post('/elevator_api/elevator/call_elevator/',data={'call_id':call1.id, 'elevator_id':elevator.id, 'person_id':person.id}, format='json')
         movement_data = response.data.get('movement', {})
-        self.assertEqual(movement_data.get('total_traveled_floors'), 8)
+        self.assertEqual(movement_data.get('total_traveled_floors'), 2)
         elevator.refresh_from_db()
-        self.assertEqual(elevator.current_floor, 8)
+        self.assertEqual(elevator.current_floor, call1.target_floor)
+
     def test_call_elevator_different_floor(self):
         elevator = Elevator.objects.create(number_of_floors= 10, elevator_max_speed=2.0, current_floor=8)
         person = Person.objects.create(name='Jon Doe', age=44)
