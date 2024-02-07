@@ -4,8 +4,8 @@ from src.services.demand_service import DemandService
 
 def main():
     # Initialize SQLite database and services
-    elevator_service = ElevatorService(db_path="database.sqlite")
-    demand_service = DemandService(db_path="database.sqlite")
+    elevator_service = ElevatorService(db_path="data/database.sqlite")
+    demand_service = DemandService(db_path="data/database.sqlite")
 
     # Create sample elevators
     elevator1 = elevator_service.create_elevator(current_floor=1, resting_floor=1, elevator_status="Idle")
