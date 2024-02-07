@@ -71,7 +71,7 @@ class SmartElevator(Elevator):
         if tmp is not None:
             self.prediction_model = tmp.prediction_model
 
-    def get_best_floor_by_hour(self, hour: int) -> int:
+    def get_best_floor_by_hour(self, hour=datetime.now().hour) -> int:
         if hour < 0 or hour > 23:
             raise ValueError("Invalid hour")
         return self.prediction_model[hour]
