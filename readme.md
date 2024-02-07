@@ -98,7 +98,7 @@ conda create -n elevator_prediction
 # Activate the Conda Environment:
 conda activate elevator_prediction
 
-# Install necessary dependencies:
+# Install necessary dependencies (not necessary in for the moment, since only using built-in lib from python)
 pip install -r requirements.txt
 ```
 
