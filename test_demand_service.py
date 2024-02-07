@@ -8,15 +8,14 @@ class TestDemandService(unittest.TestCase):
 
     def test_create_demand(self):
         demand = self.demand_service.create_demand(floor=3, timestamp="2024-02-05 12:30:00")
-        print(f"\ncreate_demand test: {demand.to_dict()}") # Optional, just to better observe via CMD
+        print(f"\ncreate_demand test: {demand.to_dict()}")
         self.assertIsNotNone(demand)
         self.assertEqual(demand.floor, 3)
 
     def test_get_demand(self):
         demand = self.demand_service.create_demand(floor=3, timestamp="2024-02-05 12:30:00")
         retrieved_demand = self.demand_service.get_demand(demand_id=demand.demand_id)
-        print(f"\nget_demand test: {retrieved_demand.to_dict()}") # Optional, just to better observe via CMD
-
+        print(f"\nget_demand test: {retrieved_demand.to_dict()}")
         self.assertIsNotNone(retrieved_demand)
         self.assertEqual(retrieved_demand.demand_id, demand.demand_id)
 
@@ -24,14 +23,14 @@ class TestDemandService(unittest.TestCase):
         demand = self.demand_service.create_demand(floor=2, timestamp="2024-02-05 11:00:00")
 
         retrieved_demand = self.demand_service.get_demand(demand_id=demand.demand_id)
-        print(f"\nget_demand before deletion: {retrieved_demand.to_dict()}") # Optional, just to better observe via CMD
+        print(f"\nget_demand before deletion: {retrieved_demand.to_dict()}")
         self.assertIsNotNone(retrieved_demand)
 
         self.demand_service.delete_demand(demand_id=demand.demand_id)
-        print("Deleted Demand") # Optional, just to better observe via CMD
+        print("Deleted Demand")
 
         retrieved_demand_after_deletion = self.demand_service.get_demand(demand_id=demand.demand_id)
-        print(f"get_demand after deletion: {retrieved_demand_after_deletion}") # Optional, just to better observe via CMD
+        print(f"get_demand after deletion: {retrieved_demand_after_deletion}")
 
         self.assertIsNone(retrieved_demand_after_deletion)
 

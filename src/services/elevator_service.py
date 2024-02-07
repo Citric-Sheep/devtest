@@ -45,19 +45,18 @@ class ElevatorService:
             demand_count = cursor.fetchone()[0]
             # Bussiness rule 1: If there are demands on the current floor, don't change elevators current floor
             if demand_count > 0 and current_floor != elevator.current_floor:
-                print(f"\nWarning: Elevator cannot be updated to another floor due to existing demands on floor {current_floor}.")
+                print(f"Warning: Elevator cannot be updated to another floor due to existing demands on floor {current_floor}.")
             elif current_floor is not None:
                 elevator.current_floor = current_floor
             if resting_floor is not None:
                 elevator.resting_floor = resting_floor
 
-                # !!!Here could be (futurely) inserted the Machine Learning algorithm/model, 
-                # already trained/tested and fine tuned, for better prediction of ideal resting floor!!!
+            # Insertion of ML prediction algorithm/model for improved setup of ideal resting floor
 
-            # Bussiness rule 2: If no new resting floor is updated, current floor shall become new resting floor.
+            # Bussiness rule 2 (for now): If no new resting floor is updated, current floor shall become new resting floor.
             else: 
                 elevator.resting_floor = elevator.current_floor
-                print("\nWarning: Resting floor automatically updated, current floor shall be new resting floor.")
+                print("Warning: Resting floor automatically updated, current floor shall be new resting floor.")
             if elevator_status is not None:
                 elevator.elevator_status = elevator_status
 
