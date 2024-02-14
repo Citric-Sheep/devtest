@@ -12,6 +12,11 @@ class Elevator(models.Model):
     elevator_max_speed = models.FloatField(default=4)
     number_of_floors = models.IntegerField(default=10)
     current_floor = models.IntegerField()
+  
+class Floor(models.Model):
+    pin_code = models.IntegerField(default=None, null=True)
+    floor_number = models.IntegerField()
+    elevator =models.ForeignKey(Elevator, on_delete= models.CASCADE)
 
 
 class ElevatorCall(models.Model):
@@ -19,7 +24,6 @@ class ElevatorCall(models.Model):
     target_floor = models.IntegerField()
     origin_floor = models.IntegerField()
     elevator = models.ForeignKey(Elevator,on_delete=models.CASCADE)
-
 
 class Movement(models.Model):
 

@@ -60,9 +60,18 @@ class PersonViewSetTestCase(TestCase):
 class ElevatorCallViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.elevator_data = {
+                            "elevator_max_speed": 1,
+                            "number_of_floors": 10,
+                            "current_floor": 0,
+                            "pincodes":{
+                                "6": 1234,
+                                "7": 1236
+                            }
+                        }
         self.elevator = Elevator.objects.create(number_of_floors=10,elevator_max_speed = 1, current_floor=0)
         self.person = Person.objects.create(name= 'John Doe', age= 30)
-        self.call_data = {'elevator': self.elevator.id, 'origin_floor': 3, 'target_floor': 7}
+        self.call_data = {'elevator': self.elevator.id, 'origin_floor': 3, 'target_floor': 1, 'access_code': 1234,'person': self.person.id}
 
     def test_create_call(self):
         response = self.client.post('/elevator_api/elevator_calls/create_call/', data=self.call_data, format='json')
@@ -77,6 +86,24 @@ class ElevatorCallViewSetTestCase(TestCase):
         self.call_data['origin_floor'] = -1
         response = self.client.post('/elevator_api/elevator_calls/create_call/', data=self.call_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    ### Live coding -> test for correct response
+    def test_correct_pincode_validation(self):
+        elevator_response = self.client.post('/elevator_api/elevator/create_elevator/', data = self.elevator_data, format='json')
+        #print(elevator_response.data['elevator'].get('id'))
+        pincode_call_data = {'elevator': elevator_response.data['elevator'].get('id'), 'origin_floor': 3, 'target_floor': 6, 'access_code': 1234, 'person':self.person.id}
+        #print("pincode call data --------------->", pincode_call_data)
+        response = self.client.post('/elevator_api/elevator_calls/create_call/', data=pincode_call_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    ### Live coding -> test for correct response
+    def test_incorrect_pincode_validation(self):
+        elevator_response = self.client.post('/elevator_api/elevator/create_elevator/', data = self.elevator_data, format='json')
+        #print(elevator_response.data['elevator'].get('id'))
+        pincode_call_data = {'elevator': elevator_response.data['elevator'].get('id'), 'origin_floor': 3, 'target_floor': 6, 'access_code': 12399, 'person':self.person.id}
+        #print("pincode call data --------------->", pincode_call_data)
+        response = self.client.post('/elevator_api/elevator_calls/create_call/', data=pincode_call_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_call(self):
         call = ElevatorCall.objects.create(elevator=self.elevator, origin_floor=3, target_floor=7,person = self.person)
@@ -118,6 +145,8 @@ class ElevatorCallViewSetTestCase(TestCase):
         response = self.client.get('/elevator_api/elevator_calls/get_calls/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+    
+    
 
 class ElevatorViewSetTestCase(TestCase):
 

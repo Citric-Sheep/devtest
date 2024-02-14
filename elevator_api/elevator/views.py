@@ -1,9 +1,10 @@
 from django.contrib.auth.models import Group, User
-from elevator.models import Elevator,ElevatorCall,Person,Movement
+from elevator.models import Elevator,ElevatorCall,Person,Movement, Floor
 from elevator.serializers import ElevatorCallSerializer, ElevatorSerializer, PersonSerializer, MovementSerializer
 from rest_framework import permissions, viewsets,status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import json
 import random
 import time
 from datetime import datetime, timedelta
@@ -43,11 +44,18 @@ class ElevatorViewSet(viewsets.ModelViewSet):
   @action(detail=False, methods=['post'])
   def create_elevator(self, request, *args, **kwargs):
     """Create a new elevator instance."""
-    response = super().create(request, *args, **kwargs)
-    if response.status_code == status.HTTP_201_CREATED:
-        return Response({'message': 'Elevator created successfully'}, status=status.HTTP_201_CREATED)
-    else:
-        return response
+    ##response = super().create(request, *args, **kwargs)
+    #elevator_serializer = ElevatorSerializer(response)
+    request_data = json.loads(request.body)
+    elevator = Elevator.objects.create(
+       elevator_max_speed =request_data['elevator_max_speed'],
+       number_of_floors = request_data['number_of_floors'],
+       current_floor = request_data['current_floor']
+    )
+    elevator_data = ElevatorSerializer(elevator)
+    ### Live coding -> argument passing to create floors function
+    self.create_floors(elevator.id,request_data['number_of_floors'],request_data['pincodes'])
+    return Response({'message': 'Elevator created successfully','elevator':elevator_data.data}, status=status.HTTP_201_CREATED)
   @action(detail=False, methods=['post'])
   def update_elevator(self, request, *args, **kwargs):
     """Update details of an elevator by providing the elevator's ID and updated data."""
@@ -155,6 +163,24 @@ class ElevatorViewSet(viewsets.ModelViewSet):
     print('Traveled time in seconds', total_movement_time, 'total_traveled_floors', total_traveled_floors)
     average_speed = total_traveled_floors / total_movement_time
     return round(average_speed,4)
+  ### Live coding -> Floor creation Logic
+  def create_floors(self,elevator_id, total_number_of_floors, pincodes):
+     elev = Elevator.objects.get(id=elevator_id)
+     for i in range(total_number_of_floors):
+        if str(i) in pincodes.keys():
+           Floor.objects.create(
+              pin_code = int(pincodes[f'{i}']),
+              floor_number = i,
+              elevator = elev
+           )
+        else:
+            Floor.objects.create(
+            floor_number = i,
+            elevator = elev
+            )
+     pass
+     
+
 class ElevatorCallViewSet(viewsets.ModelViewSet):
   """
     ViewSet to perform CRUD operations on instances of the ElevatorCall model.
@@ -197,17 +223,37 @@ class ElevatorCallViewSet(viewsets.ModelViewSet):
             elevator = Elevator.objects.get(pk=elevator_id)
             target_floor = request.data.get('target_floor')
             origin_floor = request.data.get('origin_floor')
+            floor = Floor.objects.get(elevator=elevator.id,floor_number = target_floor)
+            person = Person.objects.get(pk=request.data.get('person'))
 
+            ###Floor out of bounds restriction
             if not (0 <= origin_floor <= elevator.number_of_floors and 0 <= target_floor <= elevator.number_of_floors):
                 return Response({'Status': 'Origin or target floor is out of bounds'}, status=status.HTTP_400_BAD_REQUEST)
-            serializer = ElevatorCallSerializer(data=request.data)
-            if serializer.is_valid():
-                self.perform_create(serializer)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            ### Live coding - > pin_code to floor validation
+            if floor.pin_code is not None:
+               if request.data.get('access_code') == floor.pin_code:
+                  ElevatorCall.objects.create(
+                    elevator = elevator,
+                    target_floor = target_floor,
+                    origin_floor = origin_floor,
+                    person = person
+                    )
+                  return Response({'Status': 'pin code access granted'}, status=status.HTTP_200_OK)
+               else:
+                  return Response({'Status': 'Incorrect pin code'}, status=status.HTTP_403_FORBIDDEN)
+
+            ElevatorCall.objects.create(
+               elevator = elevator,
+               target_floor = target_floor,
+               origin_floor = origin_floor,
+               person = person
+            )
+            return Response({'Status': 'Call created'}, status=status.HTTP_200_OK)
         except Elevator.DoesNotExist:
-            return Response({'Status': 'call not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'Status': 'Elevator not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Person.DoesNotExist:
+            return Response({'Status': 'Person not found'}, status=status.HTTP_404_NOT_FOUND)
   @action(detail=False, methods=['post'])
   def update_call(self, request, *args, **kwargs):
     """
