@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy    # Si estás utilizando una base de datos SQL
+alembic       # Si estás utilizando SQLAlchemy para las migraciones de base de datos
+psycopg2
+pytest        # Para ejecutar pruebas unitarias
+httpx
+coverage
+pandas
+python-dotenv
+scikit-learn
