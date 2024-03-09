@@ -233,7 +233,7 @@ class PreprocessingResponse(BaseModel):
     dataframe: List[FloorData]
 
 @router.get("/predictor/preprocessing", response_model=PreprocessingResponse)
-def get_dataframe(db: Session = Depends(get_db)):
+def get_dataframe(db: Session = Depends(get_db), min_stops: Optional[int] = 1):
     # Obtener datos de movimientos del ascensor y demandas de usuarios
     elevator_movements = read_elevator_movements(db)
     demands = read_demands(db)
@@ -251,9 +251,14 @@ def get_dataframe(db: Session = Depends(get_db)):
     # Merge de los DataFrames
     merged_df = pd.merge(stops_per_floor, demand_per_floor, how='outer', left_on='next_floor', right_on='floor_requested')
 
+    # Filtrar los pisos con un mínimo de paradas
+    filtered_df = merged_df[merged_df['stops'] >= min_stops]
+
+    # Obtener el piso con la mayor cantidad de paradas
+    preferred_resting_floor = filtered_df.loc[filtered_df['stops'].idxmax()]['next_floor']
+
     # Combine the stops and demands data into FloorData objects
-    floor_data = []
-    for _, row in merged_df.iterrows():
-        floor_data.append(FloorData(floor=row['next_floor'], stops=row['stops'], demand=row['demand']))
+    floor_data = [FloorData(floor=row['next_floor'], stops=row['stops'], demand=row['demand']) for _, row in filtered_df.iterrows()]
+
 
     return PreprocessingResponse(dataframe=floor_data)
