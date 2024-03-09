@@ -84,6 +84,9 @@ The Elevator Predictor is a web application developed with Python and FastAPI th
 - `/demand/`: Allows creating and managing user demands.
 - `/predictor/preprocessing`: Performs data preprocessing for elevator traffic prediction.
 
+## Accessing PGAdmin and Load Balancing with Nginx
+- **PGAdmin Access:** You can connect to PGAdmin through port 5000. Simply access your web browser and enter `http://localhost:5000`.
+- **Load Balancing with Nginx:** This project includes a reverse proxy with Nginx to balance the load. Nginx is configured to listen on port 80. To access the application through Nginx, use `http://localhost`.
 ## Contribution
 Contributions are welcome! If you want to contribute to this project, please follow the steps described in the `CONTRIBUTING.md` file.
 
@@ -98,9 +101,9 @@ This project is licensed under the MIT License. See the `LICENSE` file for more 
 - Docker installed on your system. You can download it from [here](https://www.docker.com/get-started).
 
 ### Steps to Follow
-1. Clone this repository on your local machine:
-git clone https://github.com/your_username/your_project.git
-
+1. **Clone this repository on your local machine:**
+   ```bash
+   git clone https://github.com/ccastri/devtest.git
 2. Navigate to the project directory:
 3. Create a `.env` file in the project's root directory with the following environment variables:
 ```plaintext
@@ -110,4 +113,5 @@ DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 DB_NAME=your_db_name
 PGADMIN_DEFAULT_EMAIL=your_email@example.com
-4. Run docker compose up --build
+
+4. Run `docker compose up --build`
