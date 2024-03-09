@@ -47,3 +47,67 @@ Below is a list of some things from previous submissions that haven't worked out
 - Built a full website with bells and whistles
 - Spent more than the time allowed (you won't get bonus points for creating an intricate solution, we want a fit for purpose solution)
 - Overcomplicated the system mentally and failed to start
+
+
+
+
+
+
+
+## Description
+The Elevator Predictor is a web application developed with Python and FastAPI that provides functionalities for predicting elevator traffic in a building. It uses elevator movement data and user demand data to make these predictions and optimize elevator performance.
+
+## Features
+- Creation of Elevator Movements: Allows registering elevator movements, including actions like moving and calling the elevator from a floor.
+- Visualization of Elevator Movements: Provides endpoints to query and visualize registered elevator movements.
+- Creation and Management of User Demands: Allows registering user demands to use elevators from different floors.
+- Data Preprocessing: Offers an endpoint to preprocess elevator movement and user demand data, calculating the number of stops per floor and the number of demands per floor.
+- Elevator Traffic Prediction: Uses machine learning algorithms to predict elevator traffic based on processed data.
+
+## Technologies Used
+- Python
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Pandas
+- Scikit-learn
+
+## Installation and Usage
+1. Clone this repository on your local machine.
+2. Install project dependencies by running `pip install -r requirements.txt`.
+3. Configure environment variables in a `.env` file with your database credentials.
+4. Run the application with `uvicorn main:app --host 0.0.0.0 --port 8000 --reload`.
+5. Access the application through your web browser at `http://localhost:8000`.
+
+## Main Endpoints
+- `/elevator_movement/`: Allows creating and managing elevator movements.
+- `/demand/`: Allows creating and managing user demands.
+- `/predictor/preprocessing`: Performs data preprocessing for elevator traffic prediction.
+
+## Contribution
+Contributions are welcome! If you want to contribute to this project, please follow the steps described in the `CONTRIBUTING.md` file.
+
+## Authors
+- Camilo Castrillon-Calderon
+
+## License
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+## Installation with Docker Compose
+### Prerequisites
+- Docker installed on your system. You can download it from [here](https://www.docker.com/get-started).
+
+### Steps to Follow
+1. Clone this repository on your local machine:
+git clone https://github.com/your_username/your_project.git
+
+2. Navigate to the project directory:
+3. Create a `.env` file in the project's root directory with the following environment variables:
+```plaintext
+DB_HOST=database
+DB_PORT=5432
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=your_db_name
+PGADMIN_DEFAULT_EMAIL=your_email@example.com
+4. Run docker compose up --build

@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de configuración y secretos
+.env
+
+# Dependencias y caché de paquetes
+venv/
+venv2/
+env/
+*.pyc
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+appdirs.egg-info/
+pytest_cache/
+mypy_cache/
+
+# Logs y archivos temporales
+*.log
+*.swp
