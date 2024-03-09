@@ -106,12 +106,16 @@ This project is licensed under the MIT License. See the `LICENSE` file for more 
    git clone https://github.com/ccastri/devtest.git
 2. Navigate to the project directory:
 3. Create a `.env` file in the project's root directory with the following environment variables:
-```plaintext
-DB_HOST=database
-DB_PORT=5432
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=your_db_name
-PGADMIN_DEFAULT_EMAIL=your_email@example.com
+    ```plaintext
+    DB_HOST=database
+    DB_PORT=5432
+    DB_USER=your_db_user
+    DB_PASSWORD=your_db_password
+    DB_NAME=your_db_name
+    PGADMIN_DEFAULT_EMAIL=your_email@example.com
+    ```
 
-4. Run `docker compose up --build`
+4. Run the following command to build and start the Docker containers:
+    ```
+    docker compose up --build
+    ```
