@@ -10,6 +10,8 @@ load_dotenv()
 
 # Database configuration
 DATABASE_URL = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+# Database configuration for localhost
+# DATABASE_URL = f"postgresql://ccastri:password@localhost:5432/elevator_db"
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL)
