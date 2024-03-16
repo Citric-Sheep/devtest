@@ -47,3 +47,75 @@ Below is a list of some things from previous submissions that haven't worked out
 - Built a full website with bells and whistles
 - Spent more than the time allowed (you won't get bonus points for creating an intricate solution, we want a fit for purpose solution)
 - Overcomplicated the system mentally and failed to start
+
+
+**Problem and Project Objective:**
+
+My project focuses on modeling an elevator system to optimize efficiency and user experience. When an elevator is empty and stationary between floors, I consider it in a "resting" state. My main goal is to determine the optimal resting floor to place the elevator based on the next probable floor from which the elevator will be called.
+
+**Data Modeling:**
+
+To address this problem, I have defined two fundamental data models:
+
+1. **Demand:** This model represents service requests from elevator users. Each demand record contains information about the floor from which the request was made and the timestamp when the demand was created.
+
+2. **Elevator Movement:** This model records elevator movements, including floor changes, actions taken (such as going up, going down, or being stopped), and estimated arrival times. It also stores the current state of the elevator, the floor requested by the user, and the next floor to which it is heading.
+
+**Prediction and Data Engine:**
+
+My project involves building a prediction engine that uses historical demand and elevator movement data to determine the optimal resting floor at any given time. This prediction engine analyzes patterns in historical data to identify trends and accurately predict the next floor from which the elevator will be called.
+
+**Data Collection and Storage:**
+
+To collect data, I have implemented endpoints within my application that record both user demands and elevator movements. This data is stored in a relational database, allowing me to efficiently manage large volumes of information and perform complex queries for analysis and prediction.
+
+**Testing and System Verification:**
+
+Verification and validation are critical components of my development process. I use comprehensive testing at all stages of the development lifecycle to ensure the stability, functionality, and performance of the system. I apply both automated and manual tests to verify each component of the system and ensure it meets the requirements and expectations of the end user.
+
+Additionally, for the data engine, I have implemented a preprocessing function that analyzes historical elevator movement and user demand data. This function prepares the data for analysis and prediction by calculating the number of stops per floor and demand per floor, filtering floors with a minimum number of stops, and creating objects representing relevant information about the floors for subsequent use in predicting the optimal resting floor.
+
+## Installation with Docker Compose
+### Prerequisites
+- Docker installed on your system.
+
+### Steps to Follow
+1. Clone this repository on your local machine:
+   ```bash 
+    git clone https://github.com/devtest/brahyanbedoya.git
+   ```
+2. Navigate to the project directory:
+3. Create a `.env` file in the project's root directory:
+    ```plaintext
+    DATABASE_URL=postgresql://postgres:password@postgres:5432/elevator
+    DB_USER=postgres
+    DB_PASSWORD=password
+    DB_NAME=elevator
+    PGADMIN_DEFAULT_EMAIL=example@example.com
+    ```
+4. Run the following command to build and start the Docker containers:
+    ```
+    docker compose up --build
+    ```
+## Local Installation
+1. Clone this repository on your local machine:
+   ```bash 
+    git clone https://github.com/devtest/brahyanbedoya.git
+   ```
+2. Run pip install -r requirements.txt.
+3. Create a `.env` file in the project's root directory:
+    ```plaintext
+    DATABASE_URL=postgresql://postgres:password@postgres:5432/elevator
+    DB_USER=postgres
+    DB_PASSWORD=password
+    DB_NAME=elevator
+    PGADMIN_DEFAULT_EMAIL=example@example.com
+    ```
+4. Run the following command to execute the app
+    ```
+    py ./main.py
+    ```
+5. Access to the aplication
+    ```
+    http://localhost:5000
+    ```
