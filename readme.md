@@ -1,5 +1,9 @@
 # Dev Test
 
+# This project was created for the purpose of completing a coding challenge provided by Citric-Sheep (forked from their repo).
+
+# Below are some details outlining the objectives of the application.
+
 ## Elevators
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
