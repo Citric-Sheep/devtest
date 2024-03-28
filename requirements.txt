@@ -1,0 +1,7 @@
+Flask
+SQLAlchemy
+pytest
+python-dotenv
+psycopg2-binary
+pytest-order
+pytest-ordering

@@ -1,0 +1,10 @@
+# Custom files
+
+.venv
+./venv/
+poetry.lock
+.env
+.vscode
+.idea
+__pycache__/
+
