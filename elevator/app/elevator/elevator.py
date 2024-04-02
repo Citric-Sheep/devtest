@@ -1,8 +1,12 @@
+import inspect
+
 from db import elevator
 from datetime import datetime, timedelta
 
 RESTING_DIRECTION = 0
 RESTING_FLOOR_IS_VACANT_VALUE = True
+CALL_ELEVATOR_MOVEMENT_TYPE = "CALL_ELEVATOR"
+MOVE_TO_FLOOR_MOVEMENT_TYPE = "MOVE_TO_FLOOR"
 
 
 class Elevator:
@@ -35,7 +39,6 @@ class Elevator:
 
         return elevator_id
 
-    # TODO: Get elevator, to chose one of them
     @staticmethod
     def get_elevators():
         print("Retrievinig elevators")
@@ -56,10 +59,15 @@ class Elevator:
         arrival_seconds = self.calculate_arrival_time(current_floor, target_floor)
         arrival_timestamp = demand_timestamp + timedelta(seconds=arrival_seconds)
 
+        caller_name = inspect.currentframe().f_back.f_code.co_name
+        movement_type = CALL_ELEVATOR_MOVEMENT_TYPE \
+            if caller_name == "perform_call_movement" else MOVE_TO_FLOOR_MOVEMENT_TYPE
+
         record_id = elevator.create_elevator_record(self.current_elevator_id,
                                                     current_floor=current_floor,
                                                     target_floor=target_floor,
                                                     direction=direction,
+                                                    movement_type=movement_type,
                                                     demand_time=demand_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                                     arrival_time=arrival_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                                     is_vacant=is_vacant)
@@ -85,7 +93,7 @@ class Elevator:
 
             demand_timestamp = datetime.now()
 
-            if not (last_record_demand_timestamp < demand_timestamp < last_record_arrival_timestamp):
+            if not (demand_timestamp < last_record_arrival_timestamp):
 
                 self.save_resting_floor_record(last_record_target_floor, last_record_arrival_timestamp)
 
@@ -154,7 +162,6 @@ class Elevator:
             self.last_record_id = record_id
 
             return record_id
-        # Update last movement in database if is necessary "YES IT'S COMPLETE NECESSARY"
 
     def perform_elevator_movement(self, target_floor, is_last_movement=False):
         # On demand movement | normal_movement | and rest record/movement

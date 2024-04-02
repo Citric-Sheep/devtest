@@ -52,7 +52,6 @@ def set_elevator_current_floor():
 # API METHODS
 @elevator_api_routes.route('/elevators', methods=["POST", "GET"], endpoint="create_or_get_elevators")
 def create_or_get_elevators():
-    # TODO: filter by mimetype 'multipart/form-data'
     if request.method == "POST":
 
         top_floor = request.form.get("top_floor")
@@ -107,5 +106,8 @@ def move_elevator():
     return Response(json.dumps({'move_record_id': move_record_id}),
                     status=http.client.CREATED,
                     mimetype='application/json')
-# Modify the on_demand value
-# Create a new record
+
+
+@elevator_api_routes.route('/elevators/records', methods=["GET"])
+def get_elevator_records_by_id():
+    """"""

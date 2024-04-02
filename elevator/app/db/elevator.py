@@ -32,6 +32,7 @@ def create_elevator_tables():
             current_floor INT,
             target_floor INT,
             direction INT,
+            movement_type VARCHAR(20),
             demand_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             arrival_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             is_vacant BOOLEAN
@@ -99,7 +100,7 @@ def update_elevator(elevator_id, last_record_id=None, is_up=None, is_vacant=None
     return elevator_id
 
 
-def create_elevator_record(elevator_id, current_floor=1, target_floor=1, direction=0, demand_time=None,
+def create_elevator_record(elevator_id, current_floor=1, target_floor=1, direction=0, movement_type="", demand_time=None,
                            arrival_time=None, is_vacant=True):
     cursor.execute(f"""
         INSERT INTO elevator_records (
@@ -107,6 +108,7 @@ def create_elevator_record(elevator_id, current_floor=1, target_floor=1, directi
             current_floor,
             target_floor,
             direction,
+            movement_type,
             {'demand_time,' if demand_time else ''}
             {'arrival_time,' if arrival_time else ''}
             is_vacant
@@ -115,6 +117,7 @@ def create_elevator_record(elevator_id, current_floor=1, target_floor=1, directi
             {current_floor}, 
             {target_floor}, 
             {direction},
+            "{movement_type}",
             {f"'{demand_time}'," if demand_time else ""}
             {f"'{arrival_time}'," if arrival_time else ""}
             {is_vacant});
@@ -148,3 +151,17 @@ def get_record_by_id(elevator_record_id):
         elevator_record_dict = dict(zip(elevator_record_keys, elevator_record_values))
         return elevator_record_dict
     return {}
+
+
+def get_records_by_elevator_id(elevator_id):
+    cursor.execute(f"SELECT * FROM elevator_db.elevator_records WHERE elevator_id = {elevator_id}")
+    elevator_records_values = cursor.fetchall()
+    elevator_record_keys = cursor.column_names
+    elevator_records = []
+    if elevator_records_values:
+        for elevator_record_values in elevator_records_values:
+            if elevator_record_values:
+                elevator_records.append(dict(zip(elevator_record_keys, elevator_record_values)))
+        return elevator_records
+    return []
+

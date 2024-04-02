@@ -1,4 +1,5 @@
 import json
+from time import sleep
 
 DIRECTION_UP = 1
 DIRECTION_DOWN = -1
@@ -64,17 +65,30 @@ class TestElevator:
 
     def test_call_and_move_two_times(self, client):
         # Define test variables
-        call_floor = 5
+        call_floor1 = 5
+        call_floor2 = 7
         direction = 1
-        target_floor = 9
+        target_floor1 = 8
+        target_floor2 = 9
+
+        sleep(15)
 
         response = client.post(f"/api/elevators/call", data={
-            "call_floor": call_floor,
+            "call_floor": call_floor1,
             "direction": direction,
         })
 
         response = client.post("/api/elevators/move", data={
-            "target_floor": target_floor,
+            "target_floor": target_floor1,
+        })
+
+        response = client.post(f"/api/elevators/call", data={
+            "call_floor": call_floor2,
+            "direction": direction,
+        })
+
+        response = client.post("/api/elevators/move", data={
+            "target_floor": target_floor2,
         })
 
         response_content = json.loads(response.text)
