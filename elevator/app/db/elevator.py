@@ -64,6 +64,18 @@ def create_elevator(top_floor=10, lower_floor=-1, last_record_id=0, is_up=False,
     return elevator_id
 
 
+def get_elevators():
+    cursor.execute(f"SELECT * FROM {DB_NAME}.elevators")
+    elevators_values = cursor.fetchall()
+    elevators = []
+    elevator_keys = cursor.column_names
+    if elevators_values:
+        for elevator_values in elevators_values:
+            elevators.append(dict(zip(elevator_keys, elevator_values)))
+        return elevators
+    return []
+
+
 def get_elevator_by_id(elevator_id):
     cursor.execute(f"SELECT * FROM {DB_NAME}.elevators WHERE id = {elevator_id}")
     elevator_values = cursor.fetchone()
@@ -103,7 +115,7 @@ def update_elevator(elevator_id, last_record_id=None, is_up=None, is_vacant=None
 def create_elevator_record(elevator_id, current_floor=1, target_floor=1, direction=0, movement_type="", demand_time=None,
                            arrival_time=None, is_vacant=True):
     cursor.execute(f"""
-        INSERT INTO elevator_records (
+        INSERT INTO {DB_NAME}.elevator_records (
             elevator_id,
             current_floor,
             target_floor,
@@ -124,15 +136,14 @@ def create_elevator_record(elevator_id, current_floor=1, target_floor=1, directi
     """)
 
     record_id = cursor.lastrowid
-    # Commit changes and close connection
     db.conn.commit()
     return record_id
 
 
 def get_elevator_record_with_higher_timestamp_by_elevator_id(elevator_id):
-    cursor.execute(f"""SELECT elevator_id, arrival_time as elevator_last_trip_timestamp
-        FROM elevator_records 
-        WHERE elevator_id = {elevator_id}
+    cursor.execute(f"""SELECT *
+        FROM {DB_NAME}.elevator_records 
+        WHERE elevator_id = {elevator_id} and movement_type = "MOVE_TO_FLOOR"
         ORDER BY arrival_time DESC
         LIMIT 1;""")
     elevator_last_trip_values = cursor.fetchone()
@@ -154,14 +165,13 @@ def get_record_by_id(elevator_record_id):
 
 
 def get_records_by_elevator_id(elevator_id):
-    cursor.execute(f"SELECT * FROM elevator_db.elevator_records WHERE elevator_id = {elevator_id}")
+    cursor.execute(f"SELECT * FROM {DB_NAME}.elevator_records WHERE elevator_id = {elevator_id}")
     elevator_records_values = cursor.fetchall()
     elevator_record_keys = cursor.column_names
     elevator_records = []
     if elevator_records_values:
         for elevator_record_values in elevator_records_values:
-            if elevator_record_values:
-                elevator_records.append(dict(zip(elevator_record_keys, elevator_record_values)))
+            elevator_records.append(dict(zip(elevator_record_keys, elevator_record_values)))
         return elevator_records
     return []
 

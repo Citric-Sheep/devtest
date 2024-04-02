@@ -1,55 +1,12 @@
 import json
 import http.client
 
-from flask import Response, Blueprint, redirect, render_template, request, url_for
+from flask import Response, Blueprint, request
 from elevator.elevator import current_elevator
 
-
-elevator_routes = Blueprint("elevator", __name__)
 elevator_api_routes = Blueprint("elevator_api", __name__, url_prefix="/api")
-ELEVATOR_ROW_FLOORS = 3
 
 
-@elevator_routes.route("/elevator", methods=["POST", "GET"], endpoint="elevator")
-def elevator_page():
-    if current_elevator.current_elevator_id != 0:
-        elevator_floors = list(range(int(current_elevator.lower_floor), int(current_elevator.top_floor) + 1))
-        elevator_floors.remove(0)
-        elevator_floors_extra_row = int(bool(len(elevator_floors) % ELEVATOR_ROW_FLOORS))
-        elevator_rows_floors = len(elevator_floors) // ELEVATOR_ROW_FLOORS + elevator_floors_extra_row
-        
-        current_elevator.elevator_page_args = {
-            **current_elevator.elevator_page_args,
-            'elevator_floor': current_elevator.elevator_floor,
-            'current_floor': current_elevator.current_floor,
-            'elevator_floors': elevator_floors,
-            'elevator_row_floors': ELEVATOR_ROW_FLOORS,
-            'elevator_rows_floors': elevator_rows_floors
-        }
-        # current_elevator.get_elevator(set_as_default=True)
-        # TODO: Reverse list
-        return render_template("index.html", elevator_page_args=current_elevator.elevator_page_args)
-    return render_template("index.html", elevator_page_args=current_elevator.elevator_page_args)
-
-
-@elevator_routes.route("/elevator/current_floor",  methods=["POST"], endpoint="set_elevator_current_floor")
-def set_elevator_current_floor():
-
-    print(request.form.keys)
-    floor_number = request.form.get("floor_number")
-
-    if not floor_number:
-        return Response(status=http.client.BAD_REQUEST)
-
-    current_elevator.elevator_page_args = {
-        **current_elevator.elevator_page_args,
-        'current_floor': floor_number,
-    }
-    current_elevator.current_floor = floor_number
-    return render_template("index.html", elevator_page_args=current_elevator.elevator_page_args)
-
-
-# API METHODS
 @elevator_api_routes.route('/elevators', methods=["POST", "GET"], endpoint="create_or_get_elevators")
 def create_or_get_elevators():
     if request.method == "POST":
@@ -62,16 +19,22 @@ def create_or_get_elevators():
 
         elevator_id = current_elevator.create_elevator(top_floor, lower_floor, set_as_default=True)
 
-        elevator_creation_page = url_for('elevator.elevator')
-        if request.referrer and request.referrer.endswith(elevator_creation_page):
-            return redirect(elevator_creation_page)
-
         return Response(json.dumps({'elevator_id': elevator_id}),
                         status=http.client.CREATED,
                         mimetype='application/json')
     else:
-        current_elevator.get_elevators()
-        return ""
+        elevators = current_elevator.get_elevators()
+        return Response(json.dumps(elevators),
+                        status=http.client.OK,
+                        mimetype='application/json')
+
+
+@elevator_api_routes.route('/elevators/records/<int:elevator_id>', methods=["GET"])
+def get_elevator_records_by_id(elevator_id):
+    elevator_records = current_elevator.get_elevator_records_by_elevator_id(elevator_id)
+    return Response(json.dumps(elevator_records),
+                    status=http.client.OK,
+                    mimetype='application/json')
 
 
 @elevator_api_routes.route('/elevators/call', methods=["POST"], endpoint="call_elevator")
@@ -106,8 +69,3 @@ def move_elevator():
     return Response(json.dumps({'move_record_id': move_record_id}),
                     status=http.client.CREATED,
                     mimetype='application/json')
-
-
-@elevator_api_routes.route('/elevators/records', methods=["GET"])
-def get_elevator_records_by_id():
-    """"""

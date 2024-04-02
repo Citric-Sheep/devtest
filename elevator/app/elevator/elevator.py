@@ -21,7 +21,6 @@ class Elevator:
         self.is_up = False
         self.is_vacant = True
         self.is_on_demand = False
-        self.elevator_page_args = {}
 
     def create_elevator(self, top_floor, lower_floor, set_as_default=False):
         print("I'm trying to create an elevator")
@@ -41,7 +40,16 @@ class Elevator:
 
     @staticmethod
     def get_elevators():
-        print("Retrievinig elevators")
+        elevators = elevator.get_elevators()
+        return elevators
+
+    @staticmethod
+    def delete_elevator_by_elevator_id(elevator_id):
+        elevator.delete_elevator_by_elevator_id(elevator_id)
+
+    @staticmethod
+    def delete_elevator_record_by_record_id(record_id):
+        elevator.delete_elevator_record_by_record_id(record_id)
 
     def get_elevator(self, set_as_default=False):
         elevator_from_db = elevator.get_elevator_by_id(self.current_elevator_id)
@@ -55,6 +63,15 @@ class Elevator:
             self.is_on_demand = elevator_from_db.get('is_on_demand')
         return elevator_from_db
 
+    @staticmethod
+    def get_elevator_records_by_elevator_id(elevator_id):
+        elevator_records = elevator.get_records_by_elevator_id(elevator_id)
+        for elevator_record in elevator_records:
+            # To be serializable
+            elevator_record['demand_time'] = elevator_record['demand_time'].strftime('%Y-%m-%d %H:%M:%S')
+            elevator_record['arrival_time'] = elevator_record['arrival_time'].strftime('%Y-%m-%d %H:%M:%S')
+        return elevator_records
+
     def perform_movement(self, current_floor, target_floor, direction, is_vacant, demand_timestamp=datetime.now()):
         arrival_seconds = self.calculate_arrival_time(current_floor, target_floor)
         arrival_timestamp = demand_timestamp + timedelta(seconds=arrival_seconds)
@@ -62,6 +79,13 @@ class Elevator:
         caller_name = inspect.currentframe().f_back.f_code.co_name
         movement_type = CALL_ELEVATOR_MOVEMENT_TYPE \
             if caller_name == "perform_call_movement" else MOVE_TO_FLOOR_MOVEMENT_TYPE
+
+        # self.is_up = False if direction < 1 else True
+
+        if direction < 1:
+            self.is_up = False
+        else:
+            self.is_up = True
 
         record_id = elevator.create_elevator_record(self.current_elevator_id,
                                                     current_floor=current_floor,
@@ -71,6 +95,7 @@ class Elevator:
                                                     demand_time=demand_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                                     arrival_time=arrival_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                                                     is_vacant=is_vacant)
+
         return record_id
 
     def save_resting_floor_record(self, resting_floor, resting_floor_arrival_time):
@@ -84,6 +109,7 @@ class Elevator:
                                         is_vacant=RESTING_FLOOR_IS_VACANT_VALUE)
 
     def perform_call_movement(self, call_floor, direction):
+
         if self.is_on_demand:
             last_record = elevator.get_record_by_id(self.last_record_id)
             last_record_demand_timestamp = last_record.get('demand_time')
@@ -116,7 +142,8 @@ class Elevator:
 
                 return record_id
 
-            if not (last_record_current_floor < call_floor < last_record_target_floor):
+            if not ((self.is_up and last_record_current_floor < call_floor < last_record_target_floor) or
+                    (not self.is_up and last_record_target_floor < call_floor < last_record_current_floor)):
 
                 record_id = self.perform_movement(last_record_target_floor, call_floor, direction,
                                                   self.is_vacant, demand_timestamp=last_record_arrival_timestamp)
@@ -142,16 +169,20 @@ class Elevator:
 
             record_id = self.perform_movement(last_record_current_floor, call_floor, direction,
                                               self.is_vacant, demand_timestamp=last_record_demand_timestamp)
+            self.last_record_id = record_id
+            elevator.update_elevator(
+                self.current_elevator_id,
+                last_record_id=record_id)
+
             return record_id
         else:
+            last_record = elevator.get_record_by_id(self.last_record_id)
+            last_record_target_floor = last_record.get('target_floor')
+
             self.is_on_demand = True
             self.is_vacant = True
-            record_id = self.perform_movement(self.elevator_floor, call_floor, direction, self.is_vacant)
-
-            if direction < 1:
-                self.is_up = False
-            else:
-                self.is_up = True
+            # record_id = self.perform_movement(self.elevator_floor, call_floor, direction, self.is_vacant)
+            record_id = self.perform_movement(last_record_target_floor, call_floor, direction, self.is_vacant)
 
             elevator.update_elevator(
                 self.current_elevator_id,
@@ -163,7 +194,7 @@ class Elevator:
 
             return record_id
 
-    def perform_elevator_movement(self, target_floor, is_last_movement=False):
+    def perform_elevator_movement(self, target_floor):
         # On demand movement | normal_movement | and rest record/movement
         last_record = elevator.get_record_by_id(self.last_record_id)
         demand_timestamp = last_record.get('arrival_time')
@@ -187,9 +218,12 @@ class Elevator:
 
         elevator_last_trip = elevator.get_elevator_record_with_higher_timestamp_by_elevator_id(self.current_elevator_id)
 
+        if target_floor == 4:
+            debug = ""
+
         if (elevator_last_trip.get("arrival_time") and
                 elevator_last_trip.get("arrival_time") > arrival_timestamp):
-            record_id = elevator_last_trip.get("elevator_id")
+            record_id = elevator_last_trip.get("id")
 
         elevator.update_elevator(
             self.current_elevator_id,
