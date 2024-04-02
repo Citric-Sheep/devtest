@@ -4,7 +4,7 @@ from db import elevator
 from datetime import timedelta
 
 
-def get_ml_records_by_elevator_id(elevator_id):
+def get_records_by_elevator_id_with_resting_floor_calculated(elevator_id):
     elevator_records = elevator.get_records_by_elevator_id(elevator_id)
 
     resting_floor_widows_of_time_records = []
@@ -29,13 +29,13 @@ def get_ml_records_by_elevator_id(elevator_id):
         elevator_record['demand_time'] = elevator_record['demand_time'].strftime('%Y-%m-%d %H:%M:%S')
         elevator_record['arrival_time'] = elevator_record['arrival_time'].strftime('%Y-%m-%d %H:%M:%S')
 
-    column_names = list(elevator_records[0].keys())
+    # column_names = list(elevator_records[0].keys())S
 
-    file_name = 'training_data.csv'
-
-    with open(file_name, 'w', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=column_names)
-        writer.writeheader()
-        writer.writerows(elevator_records)
+    # file_name = 'training_data.csv'
+    #
+    # with open(file_name, 'w', newline='') as csvfile:
+    #     writer = csv.DictWriter(csvfile, fieldnames=column_names)
+    #     writer.writeheader()
+    #     writer.writerows(elevator_records)
 
     return elevator_records
