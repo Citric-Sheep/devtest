@@ -13,7 +13,6 @@ class Elevator:
     
     def __init__(self):
         self.current_floor = 1
-        self.elevator_floor = 1
         self.current_elevator_id = 0
         self.top_floor = 10
         self.lower_floor = -1 
@@ -51,9 +50,9 @@ class Elevator:
     def delete_elevator_record_by_record_id(record_id):
         elevator.delete_elevator_record_by_record_id(record_id)
 
-    def get_elevator(self, set_as_default=False):
-        elevator_from_db = elevator.get_elevator_by_id(self.current_elevator_id)
-        if set_as_default:
+    def set_current_elevator(self, elevator_id):
+        elevator_from_db = elevator.get_elevator_by_id(elevator_id)
+        if elevator_from_db:
             self.current_elevator_id = elevator_from_db.get('id')
             self.top_floor = elevator_from_db.get('top_floor')
             self.lower_floor = elevator_from_db.get('lower_floor')
@@ -61,7 +60,9 @@ class Elevator:
             self.is_up = elevator_from_db.get('is_up')
             self.is_vacant = elevator_from_db.get('is_vacant')
             self.is_on_demand = elevator_from_db.get('is_on_demand')
-        return elevator_from_db
+            return elevator_from_db
+        else:
+            return {}
 
     @staticmethod
     def get_elevator_records_by_elevator_id(elevator_id):
@@ -181,7 +182,6 @@ class Elevator:
 
             self.is_on_demand = True
             self.is_vacant = True
-            # record_id = self.perform_movement(self.elevator_floor, call_floor, direction, self.is_vacant)
             record_id = self.perform_movement(last_record_target_floor, call_floor, direction, self.is_vacant)
 
             elevator.update_elevator(

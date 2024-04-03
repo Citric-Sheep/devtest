@@ -11,12 +11,12 @@ class TestElevatorBehavior:
 
     def test_create_an_elevator(self, client):
         # Define test variables
-        elevator_top_floor = -8
-        elevator_lower_floor = 10
+        elevator_top_floor = 10
+        elevator_lower_floor = -8
 
         response = client.post(f"/api/elevators", data={
-            "top_floor": elevator_lower_floor,
-            "lower_floor": elevator_top_floor,
+            "top_floor": elevator_top_floor,
+            "lower_floor": elevator_lower_floor,
         })
 
         assert response.status_code == CREATED_STATUS_CODE
