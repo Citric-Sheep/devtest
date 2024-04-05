@@ -14,7 +14,7 @@ class ElevatorStatus(str, Enum):
 class ElevatorTiming(int, Enum):
     """Time it takes the elevator to perform some actions, in seconds"""
 
-    OPEN = 0.5
-    CLOSE = 0.8
-    PER_FLOOR = 1.2
-    PER_USER_TO_PASS = 1.5
+    OPEN = 0.1
+    CLOSE = 0.2
+    PER_FLOOR = 0.3
+    PER_USER_TO_PASS = 0.4

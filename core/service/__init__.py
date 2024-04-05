@@ -1,91 +1,77 @@
-"""Models"""
+"""Service Layer"""
 
 import logging
-from dataclasses import dataclass
 from time import sleep
-from typing import List, NewType, Optional
+from typing import List, Optional
 
-from app.domain.constants import ElevatorStatus, ElevatorTiming
-from app.domain.errors import ElevatorError
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s :: %(levelname)s :: %(message)s"
-)
-
-Floor = NewType("Floor", int)
+from core.elevator.constants import ElevatorStatus, ElevatorTiming
+from core.elevator.errors import ElevatorError
+from core.elevator.model import Demand, Elevator, Floor
 
 
-@dataclass
-class Demand:
-    """Demand is considered a user's request to use the elevator"""
+def _wait_users(qty: int) -> None:
+    """Time it takes the users to enter/leave the elevator"""
+    if qty <= 0:
+        raise ElevatorError("User quantity must be at least 1.")
+    logging.info("Users (%s) passing.", qty)
+    sleep(ElevatorTiming.PER_USER_TO_PASS * qty)
 
-    origin: Floor
-    destination: Floor
-    users_qty: int = 1
 
-
-class Elevator:
+class ElevatorService(Elevator):
     """Elevator simulation model"""
 
     def __init__(
-        self: "Elevator",
+        self: "ElevatorService",
         top: Floor,
         current: Floor = Floor(0),
         queue: Optional[List[Demand]] = None,
     ):
         """Init function for Elevator class"""
+        super().__init__()
         self.top = top
         self.current = current
         self.queue = queue if queue else []
         self.status: ElevatorStatus = ElevatorStatus.VACANT
         self.is_opened: bool = False
 
-    @staticmethod
-    def _wait_users(qty: int) -> None:
-        """Time it takes the users to enter/leave the elevator"""
-        if qty <= 0:
-            raise ElevatorError("User quantity must be at least 1.")
-        logging.info("Users (%s) passing.", qty)
-        sleep(ElevatorTiming.PER_USER_TO_PASS * qty)
-
-    def _open_doors(self: "Elevator") -> None:
+    def _open_doors(self: "ElevatorService") -> None:
         """Time it takes the elevator to open doors"""
         if not self.is_opened:
-            logging.info("Doors opening.")
+            logging.debug("Doors opening.")
             self.is_opened = True
             sleep(ElevatorTiming.OPEN)
 
-    def _close_doors(self: "Elevator") -> None:
+    def _close_doors(self: "ElevatorService") -> None:
         """Time it takes the elevator to open doors"""
         if self.is_opened:
-            logging.info("Doors closing.")
+            logging.debug("Doors closing.")
             sleep(ElevatorTiming.CLOSE)
             self.is_opened = False
 
-    def _move_to(self: "Elevator", floor: Floor) -> None:
+    def _move_to(self: "ElevatorService", floor: Floor) -> None:
         """Elevator movement"""
         logging.info("Preparing trip to %s", floor)
         self._close_doors()
-        logging.info("Current floor: %s", self.current)
+        logging.debug("Current floor: %s", self.current)
         while floor != self.current:
             self.current += 1 if floor > self.current else -1
             sleep(ElevatorTiming.PER_FLOOR)
-            logging.info("Current floor: %s", self.current)
+            logging.debug("Current floor: %s", self.current)
 
-    def attend(self: "Elevator", demand: Demand) -> None:
+    def attend(self: "ElevatorService", demand: Demand) -> None:
         """Attend an elevator request (demand)."""
         logging.info("Preparing to ATTEND %s", demand)
         self.status = ElevatorStatus.BUSY
         if demand.origin != self.current:
             self._move_to(floor=demand.origin)
         self._open_doors()
-        self._wait_users(qty=demand.users_qty)
+        _wait_users(qty=demand.user_qty)
         self._move_to(floor=demand.destination)
         self._open_doors()
-        self._wait_users(qty=demand.users_qty)
+        _wait_users(qty=demand.user_qty)
         self._close_doors()
 
-    def register(self: "Elevator", demand: Demand):
+    def register(self: "ElevatorService", demand: Demand):
         """Register demand in queue or attend if queue is empty"""
         # TODO: Validate demand by applying domain rules
         if self.status == ElevatorStatus.BUSY:
@@ -95,11 +81,11 @@ class Elevator:
             # Case3: Queue is empty, elevator is vacant
             self.attend(demand)
 
-    def update_queue(self: "Elevator", queue: List[Demand]):
+    def update_queue(self: "ElevatorService", queue: List[Demand]):
         """Update elevator queue by adding demand"""
         self.queue = queue
 
-    def run(self):
+    def run(self: "ElevatorService"):
         """Turn ON the elevator"""
         self.status = ElevatorStatus.BUSY
         for demand in self.queue:
