@@ -7,6 +7,7 @@ from pydantic import UUID4
 from sqlalchemy.orm.session import Session
 
 from app.config.database import get_db_session
+from app.constants import WELCOME_MESSAGE
 from app.schemas import ElevatorDemandInput, ElevatorDemandOutput
 from app.service import ElevatorDemandService
 
@@ -66,4 +67,4 @@ def delete_record(item_id: UUID4, session: Session = Depends(get_db_session)) ->
 @default_router.get(path="/", status_code=200)
 def main() -> dict:
     """Root endpoint"""
-    return {"message": "Welcome to Elevator simulator. Go to /docs"}
+    return {"message": WELCOME_MESSAGE}
