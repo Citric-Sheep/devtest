@@ -43,11 +43,18 @@ class ElevatorDemandRepository(AbstractRepository):
     """Elevator Demand Repository Class"""
 
     def __init__(self, session: Session) -> None:
-        """Init function"""
+        """
+        Init function.
+        :return: None
+        """
         self.session = session
 
     def create(self, item: ElevatorDemandInput) -> ElevatorDemandOutput:
-        """Create demand objects"""
+        """
+        Create demand objects.
+        :parameter item: Elevator Demand object.
+        :return: Created object from database.
+        """
         demand = ElevatorDemand(**item.model_dump())
         self.session.add(demand)
         self.session.commit()
@@ -57,18 +64,30 @@ class ElevatorDemandRepository(AbstractRepository):
         )
 
     def get_all(self) -> List[ElevatorDemandOutput]:
-        """List demand objects"""
+        """
+        List demand objects.
+        :return: List of existing object from database.
+        """
         items = self.session.query(ElevatorDemand).all()
         return [ElevatorDemandOutput(**item.__dict__) for item in items]
 
     def get_item(self, item_id: UUID4) -> Type[ElevatorDemand]:
-        """Get demand object by ID"""
+        """
+        Get demand object by ID.
+        :parameter item_id: Object ID.
+        :return: Elevator Demand object from database.
+        """
         return self.session.query(ElevatorDemand).filter_by(id=item_id).first()
 
     def update(
         self, item: Type[ElevatorDemand], new_data: ElevatorDemandInput
     ) -> ElevatorDemandOutput:
-        """Update demand object"""
+        """
+        Update demand object.
+        :parameter item: Elevator Demand object.
+        :parameter new_data: Data to update in object.
+        :return: Updated Elevator Demand object from database.
+        """
         item.origin = new_data.origin
         item.destination = new_data.destination
         self.session.commit()
@@ -76,7 +95,11 @@ class ElevatorDemandRepository(AbstractRepository):
         return ElevatorDemandOutput(**item.__dict__)
 
     def delete(self, item: Type[ElevatorDemand]) -> bool:
-        """Delete demand object"""
+        """
+        Delete demand object.
+        :parameter item: Elevator Demand object.
+        """
+        id_ = item.id
         self.session.delete(item)
         self.session.commit()
-        return True
+        return bool(self.session.query(ElevatorDemand).filter_by(id=id_).first())

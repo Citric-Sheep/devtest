@@ -15,12 +15,18 @@ local_session = sessionmaker(
 
 
 def create_database() -> None:
-    """Create tables and sqlite db file."""
+    """
+    Create tables and sqlite db file.
+    :return: None
+    """
     ElevatorDemand.metadata.create_all(bind=engine)
 
 
 def get_db_session() -> Session:
-    """Yields a database session."""
+    """
+    Generate a database session.
+    :return: DB session
+    """
     db_session = local_session()
     try:
         yield db_session

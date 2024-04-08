@@ -19,7 +19,11 @@ demand_router = APIRouter(prefix="/demand")
 def list_records(
     session: Session = Depends(get_db_session),
 ) -> List[ElevatorDemandOutput]:
-    """Read all db records."""
+    """
+    Read all db records.  \f
+    :param session: Database session.
+    :return: List of Elevator Demand objects.
+    """
     service = ElevatorDemandService(session=session)
     return service.get_all()
 
@@ -28,7 +32,12 @@ def list_records(
 def create_record(
     item: ElevatorDemandInput, session: Session = Depends(get_db_session)
 ) -> ElevatorDemandOutput:
-    """Insert record in db."""
+    """
+    Insert record in db.  \f
+    :param item: Elevator Demand input object.
+    :param session: Database session.
+    :return: Elevator Demand object.
+    """
     service = ElevatorDemandService(session=session)
     return service.create(input_=item)
 
@@ -39,7 +48,12 @@ def create_record(
 def search_record(
     item_id: UUID4, session: Session = Depends(get_db_session)
 ) -> ElevatorDemandOutput:
-    """Search record by ID."""
+    """
+    Search record by ID.  \f
+    :param item_id: Item ID.
+    :param session: Database session.
+    :return: Elevator Demand object.
+    """
     service = ElevatorDemandService(session=session)
     return service.get_one(id_=item_id)
 
@@ -52,19 +66,33 @@ def update_record(
     new_data: ElevatorDemandInput,
     session: Session = Depends(get_db_session),
 ) -> ElevatorDemandOutput:
-    """Update existing record."""
+    """
+    Update existing record.  \f
+    :param item_id: Item ID.
+    :param session: Database session.
+    :param new_data: New data to update item.
+    :return: Elevator Demand object.
+    """
     service = ElevatorDemandService(session=session)
     return service.update(id_=item_id, new_data=new_data)
 
 
 @demand_router.delete(path="/{item_id}", status_code=204)
 def delete_record(item_id: UUID4, session: Session = Depends(get_db_session)) -> None:
-    """Delete existing record."""
+    """
+    Delete existing record.  \f
+    :param item_id: Item ID.
+    :param session: Database session.
+    :return: None
+    """
     service = ElevatorDemandService(session=session)
     service.delete(id_=item_id)
 
 
 @default_router.get(path="/", status_code=200)
 def main() -> dict:
-    """Root endpoint"""
+    """
+    Root endpoint.  \f
+    :return: Dictionary
+    """
     return {"message": WELCOME_MESSAGE}

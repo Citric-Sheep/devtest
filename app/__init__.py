@@ -3,9 +3,10 @@
 from fastapi import FastAPI
 
 from app.config.database import create_database
+from app.constants import DOCS_TITLE
 from app.routers import default_router, demand_router
 
-app = FastAPI(debug=True, title="Elevator Demand Records", docs_url="/docs")
+app = FastAPI(debug=True, title=DOCS_TITLE, docs_url="/docs")
 
 create_database()
 
