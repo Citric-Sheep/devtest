@@ -1,16 +1,17 @@
-"""Models"""
+"""Elevator domain model"""
 
 import logging
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, NewType
+from time import sleep
+from typing import List, NewType, Optional, Union
 
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s :: %(levelname)s :: %(message)s"
-)
+from core.elevator.constants import ElevatorStatus, ElevatorTiming
 
 Floor = NewType("Floor", int)
+
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s :: %(levelname)s :: %(message)s"
+)
 
 
 @dataclass
@@ -19,40 +20,69 @@ class Demand:
 
     origin: Floor
     destination: Floor
-    user_qty: int = 1
 
 
-class Elevator(ABC):
-    """Elevator simulation model"""
+class Elevator:
+    """Elevator Model"""
 
-    def __init__(self: "Elevator"):
+    def __init__(
+        self: "Elevator",
+        top: Union[Floor, int],
+        current: Union[Floor, int] = 0,
+        queue: Optional[List[Demand]] = None,
+    ):
         """Init function for Elevator class"""
+        super().__init__()
+        self.top = Floor(top)
+        self.current = Floor(current)
+        self.queue = queue if queue else []
+        self.status: ElevatorStatus = ElevatorStatus.VACANT
+        self.is_opened: bool = False
 
-    @abstractmethod
     def _open_doors(self: "Elevator") -> None:
         """Time it takes the elevator to open doors"""
-        raise NotImplementedError
+        if not self.is_opened:
+            logging.debug("Doors opening.")
+            self.is_opened = True
+            sleep(ElevatorTiming.OPEN)
 
     def _close_doors(self: "Elevator") -> None:
         """Time it takes the elevator to open doors"""
-        raise NotImplementedError
+        if self.is_opened:
+            logging.debug("Doors closing.")
+            sleep(ElevatorTiming.CLOSE)
+            self.is_opened = False
 
     def _move_to(self: "Elevator", floor: Floor) -> None:
         """Elevator movement"""
-        raise NotImplementedError
+        self._close_doors()
+        logging.debug("Current floor: %s", self.current)
+        while floor != self.current:
+            self.current += 1 if floor > self.current else -1
+            sleep(ElevatorTiming.PER_FLOOR)
+            logging.debug("Current floor: %s", self.current)
 
     def attend(self: "Elevator", demand: Demand) -> None:
         """Attend an elevator request (demand)."""
-        raise NotImplementedError
+        if demand.origin == demand.destination:
+            logging.debug("Demand origin is same as destination.")
+            return
+        logging.info("Preparing to ATTEND %s", demand)
+        self.status = ElevatorStatus.BUSY
+        logging.info("Status: %s", self.status)
+        if demand.origin != self.current:
+            self._move_to(floor=demand.origin)
+        self._open_doors()
+        sleep(ElevatorTiming.WAIT_PASSENGERS)
+        self._move_to(floor=demand.destination)
+        self._open_doors()
+        sleep(ElevatorTiming.WAIT_PASSENGERS)
+        self._close_doors()
 
-    def register(self: "Elevator", demand: Demand):
-        """Register demand in queue"""
-        raise NotImplementedError
-
-    def update_queue(self: "Elevator", queue: List[Demand]):
-        """Update elevator queue by adding demand"""
-        raise NotImplementedError
-
-    def run(self):
+    def run(self: "Elevator"):
         """Turn ON the elevator"""
-        raise NotImplementedError
+        self.status = ElevatorStatus.BUSY
+        for demand in self.queue:
+            self.attend(demand=demand)
+        self.status = ElevatorStatus.VACANT
+        logging.info("Status: %s", self.status)

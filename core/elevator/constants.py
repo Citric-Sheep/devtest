@@ -17,4 +17,4 @@ class ElevatorTiming(int, Enum):
     OPEN = 0.1
     CLOSE = 0.2
     PER_FLOOR = 0.3
-    PER_USER_TO_PASS = 0.4
+    WAIT_PASSENGERS = 0.4
