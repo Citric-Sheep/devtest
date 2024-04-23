@@ -2,22 +2,23 @@
 Modelos Pydantic
 """
 
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel
 from datetime import datetime
 
+
 class ElevatorGet(BaseModel):
-    time_stamp : datetime
-    prev_resting_floor : int
+    time_stamp: datetime
+    prev_resting_floor: int
     whos_calling: int
-    where_to : int
-    resting_floor : int
+    where_to: int
+    resting_floor: int
+
 
 class ElevatorState(BaseModel):
     resting_floor: int
 
+
 class ElevatorCall(ElevatorState):
-    timestamp : datetime
+    time_stamp: datetime
     whos_calling: int
     where_to: int
-
-

@@ -1,23 +1,21 @@
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,976 - INFO - SELECT DATABASE()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,976 - INFO - [raw sql] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,977 - INFO - SELECT @@sql_mode
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,977 - INFO - [raw sql] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,977 - INFO - SELECT @@lower_case_table_names
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,977 - INFO - [raw sql] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,978 - INFO - BEGIN (implicit)
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,979 - INFO - SHOW TABLES
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,979 - INFO - [generated in 0.00019s] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,981 - INFO - SET FOREIGN_KEY_CHECKS = 0
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,981 - INFO - [generated in 0.00023s] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,982 - INFO - DROP TABLE IF EXISTS elevator
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,982 - INFO - [generated in 0.00026s] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,989 - INFO - SET FOREIGN_KEY_CHECKS = 1
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,990 - INFO - [generated in 0.00035s] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,990 - INFO - COMMIT
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,991 - INFO - BEGIN (implicit)
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,992 - INFO - DESCRIBE `devtest`.`elevator`
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,992 - INFO - [raw sql] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,994 - INFO - 
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,869 - INFO - SELECT DATABASE()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,869 - INFO - [raw sql] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,870 - INFO - SELECT @@sql_mode
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,870 - INFO - [raw sql] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,871 - INFO - SELECT @@lower_case_table_names
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,871 - INFO - [raw sql] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,872 - INFO - BEGIN (implicit)
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,873 - INFO - SHOW TABLES
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,873 - INFO - [generated in 0.00028s] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,877 - INFO - SET FOREIGN_KEY_CHECKS = 0
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,877 - INFO - [generated in 0.00034s] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,878 - INFO - SET FOREIGN_KEY_CHECKS = 1
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,878 - INFO - [generated in 0.00020s] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,878 - INFO - COMMIT
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,879 - INFO - BEGIN (implicit)
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,879 - INFO - DESCRIBE `devtest`.`elevator`
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,880 - INFO - [raw sql] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,881 - INFO - 
 CREATE TABLE elevator (
 	id INTEGER NOT NULL AUTO_INCREMENT, 
 	time_stamp DATETIME NOT NULL, 
@@ -29,10 +27,10 @@ CREATE TABLE elevator (
 )
 
 
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:12,994 - INFO - [no key 0.00025s] ()
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:13,006 - INFO - COMMIT
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:13,008 - INFO - BEGIN (implicit)
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:13,009 - INFO - INSERT INTO elevator (time_stamp, prev_resting_floor, whos_calling, where_to, resting_floor) VALUES (%s, %s, %s, %s, %s)
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:13,009 - INFO - [generated in 0.00024s] (datetime.datetime(2024, 4, 21, 14, 7, 12, 887414), 0, 0, 0, 0)
-(sqlalchemy.engine.Engine) - 2024-04-21 14:07:13,011 - INFO - COMMIT
-(models.Elevator) - 2024-04-21 14:07:13,013 - INFO - Todo fue insertado correctamente en 'Elevator'
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,882 - INFO - [no key 0.00020s] ()
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,897 - INFO - COMMIT
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,901 - INFO - BEGIN (implicit)
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,902 - INFO - INSERT INTO elevator (time_stamp, prev_resting_floor, whos_calling, where_to, resting_floor) VALUES (%s, %s, %s, %s, %s)
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,902 - INFO - [generated in 0.00040s] (datetime.datetime(2024, 4, 23, 9, 1, 45, 706751), 0, 0, 0, 0)
+(sqlalchemy.engine.Engine) - 2024-04-23 09:01:45,907 - INFO - COMMIT
+(models.Elevator) - 2024-04-23 09:01:45,909 - INFO - Todo fue insertado correctamente en 'Elevator'

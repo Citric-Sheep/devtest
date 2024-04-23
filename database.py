@@ -18,7 +18,6 @@ class Base(AsyncAttrs, DeclarativeBase):
     pass
 
 
-
 async def setup_database(engine: AsyncEngine):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -2,7 +2,7 @@
 Modelos SQLAlchemy
 """
 
-from database import Base, engine
+from database import Base
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import insert
@@ -12,20 +12,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class Elevator(Base):
     __tablename__ = "elevator"
     id: Mapped[int] = mapped_column(primary_key=True)
-    time_stamp : Mapped[datetime] = mapped_column(insert_default=datetime.now())
-    prev_resting_floor : Mapped[int] = mapped_column()
+    time_stamp: Mapped[datetime] = mapped_column(insert_default=datetime.now())
+    prev_resting_floor: Mapped[int] = mapped_column()
     whos_calling: Mapped[int] = mapped_column()
-    where_to : Mapped[int] = mapped_column()    
-    resting_floor : Mapped[int] = mapped_column()
+    where_to: Mapped[int] = mapped_column()
+    resting_floor: Mapped[int] = mapped_column()
 
-    def resting_floor_logic(self, where_to: int):
+    @classmethod
+    def resting_floor_logic(cls, where_to: int):
         # for now resting floor will be the where_to floor
         return where_to
 
-    @classmethod    
+    @classmethod
     async def initial_condition(cls, engine):
         logger = logging.getLogger(f"{__name__}.{__class__.__name__}")
         async with AsyncSession(engine) as session:

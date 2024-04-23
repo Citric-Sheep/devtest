@@ -47,3 +47,20 @@ Below is a list of some things from previous submissions that haven't worked out
 - Built a full website with bells and whistles
 - Spent more than the time allowed (you won't get bonus points for creating an intricate solution, we want a fit for purpose solution)
 - Overcomplicated the system mentally and failed to start
+
+
+
+# Comentarios
+
+* Por ahora, para que funcione requiere mysql. Hay que crear el usuario y el schema:
+```mysql 
+CREATE USER 'citric-sheep'@'localhost' IDENTIFIED BY 'citricSheep';
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, INDEX, DELETE, SELECT, REFERENCES  on devtest.*  TO 'citric-sheep'@'localhost';
+```
+Idealmente para evitar esto haría un contenedor en Docker.
+
+* También hay que crear las tablas de las bases de datos:
+
+```python
+python3 services.py
+```

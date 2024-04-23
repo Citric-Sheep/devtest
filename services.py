@@ -2,8 +2,7 @@ from database import drop_all_tables, setup_database, engine
 
 from models import Elevator
 
-import schemas
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import asyncio
 
@@ -21,6 +20,7 @@ async def initialize_db(from_scratch=True):
     # yield engine
     await engine.dispose()
 
+
 async def initial_condition(async_session: AsyncSession):
     logger.info("Initial condition")
     async_session.begin()
@@ -33,14 +33,16 @@ async def initial_condition(async_session: AsyncSession):
         raise e
     return init
 
-async def get_states(async_session: AsyncSession):
+
+async def get_states(async_session: AsyncSession, limit: int = 3):
     logger.info("Getting states")
     async_session.begin()
-    query = select(Elevator).order_by(Elevator.time_stamp.desc()).limit(10)
+    query = select(Elevator).order_by(Elevator.time_stamp.desc()).limit(limit)
     result = await async_session.execute(query)
     states = result.scalars().all()
     await async_session.commit()
     return states
+
 
 async def get_current_floor(async_session: AsyncSession):
     logger.info("Getting current floor")
@@ -52,17 +54,17 @@ async def get_current_floor(async_session: AsyncSession):
     return floor
 
 
-
 async def call_elevator(from_floor: int, to_floor: int, async_session: AsyncSession):
     logger.info(f"Calling elevator from {from_floor} to {to_floor}")
     async_session.begin()
     prev_resting_floor = await get_current_floor(async_session)
+    floor = prev_resting_floor.resting_floor
     elevator_event = Elevator(
-        prev_resting_floor=prev_resting_floor,
-        whos_calling=from_floor, 
+        prev_resting_floor=floor,
+        whos_calling=from_floor,
         where_to=to_floor,
-        resting_floor=Elevator.resting_floor_logic(),
-        )
+        resting_floor=Elevator.resting_floor_logic(where_to=to_floor),
+    )
 
     async_session.add(elevator_event)
     try:
@@ -71,98 +73,6 @@ async def call_elevator(from_floor: int, to_floor: int, async_session: AsyncSess
         await async_session.rollback()
         raise e
     return elevator_event
-
-
-# async def create_user(user: schemas.UserCreate, async_session: AsyncSession):
-#     hashed_password = hash_password(user.password)
-#     logger.info("Creating user")
-#     db_user = UserDB(email=user.email, hashed_pass=hashed_password)
-
-#     async_session.begin()
-#     async_session.add(db_user)
-#     try:
-#         await async_session.commit()
-#     except Exception as e:
-#         await async_session.rollback()
-#         raise e
-#     return db_user
-
-
-# async def get_user(
-#     async_session: AsyncSession,
-#     user_id: int | None = None,
-#     email: str | None = None,
-# ) -> UserDB | None:
-#     """Gets a user by either their email or id."""
-#     logger.info(f"Getting user {user_id} {email}")
-#     await async_session.begin()
-#     try:
-#         if user_id:
-#             stmt = select(UserDB).where(UserDB.id_user == user_id)
-#         elif email:
-#             stmt = select(UserDB).where(UserDB.email == email)
-#         else:
-#             return None
-#         result = await async_session.execute(stmt)
-#     except Exception as e:
-#         await async_session.rollback()
-#         logger.exception(e)
-#         raise e
-#     return result.scalars().first()
-
-
-# async def get_users(
-#     async_session: AsyncSession,
-# ):
-#     """Gets a user by either their email or id."""
-#     logger.info(f"Getting all users")
-#     await async_session.begin()
-#     try:
-#         stmt = select(UserDB)
-#         result = await async_session.execute(stmt)
-#     except Exception as e:
-#         await async_session.rollback()
-#         logger.exception(e)
-#         raise e
-#     return result.scalars().all()
-
-
-# async def create_user_personal_data(
-#     user_id: int, personal_data: schemas.UserPersonalData, async_session: AsyncSession
-# ):
-#     """Creates a user personal data."""
-#     logger.info(f"Creando personal data para usuario {user_id}")
-#     user = await get_user(async_session=async_session, user_id=user_id)
-#     db_personal_data = UserPersonalDataDB(
-#         id_user=user.id_user,
-#         # owner=user,
-#         nombre=personal_data.nombre,
-#         apellido=personal_data.apellido,
-#         direccion=personal_data.direccion,
-#         telefono=personal_data.telefono,
-#     )
-#     async_session.add(db_personal_data)
-#     try:
-#         await async_session.commit()
-#     except Exception as e:
-#         await async_session.rollback()
-#         raise e
-#     return db_personal_data
-
-
-# async def get_personal_data_by_user_id(
-#     user_id: int,
-#     async_session: AsyncSession,
-# ) -> UserPersonalDataDB | None:
-#     """Gets a personal data by user id."""
-#     async_session.begin()
-#     try:
-#         stmt = select(UserPersonalDataDB).where(UserPersonalDataDB.id_user == user_id)
-#         result = await async_session.execute(stmt)
-#     except Exception as e:
-#         async_session.rollback()
-#         raise e
-#     return result.scalars().first()
 
 
 if __name__ == "__main__":
