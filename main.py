@@ -32,7 +32,7 @@ async_session = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 # Armo el objeto de la app
 app = FastAPI(
-    title="prueba",
+    title="devtest",
     description="API citric sheep",
 )
 
@@ -52,6 +52,8 @@ async def get_events(limit: int = 3):
 async def get_current_floor():
     session = async_session()
     floor = await services.get_current_floor(async_session=session)
+    if not floor:
+        raise HTTPException(status_code=404, detail="No events found")
     await session.close()
     return floor
 

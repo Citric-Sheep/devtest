@@ -4,7 +4,6 @@ Conexión a la base de datos de usuarios
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
-    AsyncSession,
     AsyncEngine,
     AsyncAttrs,
 )
@@ -19,16 +18,19 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 
 async def setup_database(engine: AsyncEngine):
+    """
+    Creates tables in the Base metadata
+    """
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
 engine = create_async_engine(f"mysql+aiomysql://{user}:{pwd}@{host}/{db}", echo=True)
 
-MySessionAsync = AsyncSession(engine)
-
-
 async def drop_all_tables(engine: AsyncEngine):
+    """
+    Drop all tables from the database
+    """
     async with engine.begin() as conn:
         result = await conn.execute(text("SHOW TABLES"))
         tables = result.fetchall()

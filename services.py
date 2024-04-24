@@ -12,29 +12,20 @@ logger = logging.getLogger(__name__)
 
 
 async def initialize_db(from_scratch=True):
-    # engine = await engine_to_database()
+    """
+    Initilize the database tables
+    """
     if from_scratch:
         await drop_all_tables(engine)
         await setup_database(engine)
         await Elevator.initial_condition(engine)
-    # yield engine
     await engine.dispose()
 
 
-async def initial_condition(async_session: AsyncSession):
-    logger.info("Initial condition")
-    async_session.begin()
-    init = Elevator(prev_resting_floor=0, whos_calling=0, where_to=0, resting_floor=0)
-    async_session.add(init)
-    try:
-        await async_session.commit()
-    except Exception as e:
-        await async_session.rollback()
-        raise e
-    return init
-
-
 async def get_states(async_session: AsyncSession, limit: int = 3):
+    """
+    Get the last 'limit' states from the database
+    """
     logger.info("Getting states")
     async_session.begin()
     query = select(Elevator).order_by(Elevator.time_stamp.desc()).limit(limit)
@@ -45,6 +36,9 @@ async def get_states(async_session: AsyncSession, limit: int = 3):
 
 
 async def get_current_floor(async_session: AsyncSession):
+    """
+    Get the current floor of the elevator.
+    """
     logger.info("Getting current floor")
     async_session.begin()
     query = select(Elevator).order_by(Elevator.time_stamp.desc()).limit(1)
@@ -55,12 +49,15 @@ async def get_current_floor(async_session: AsyncSession):
 
 
 async def call_elevator(from_floor: int, to_floor: int, async_session: AsyncSession):
+    """
+    Call the elevator from 'from_floor' to 'to_floor'
+    """
     logger.info(f"Calling elevator from {from_floor} to {to_floor}")
     async_session.begin()
     prev_resting_floor = await get_current_floor(async_session)
-    floor = prev_resting_floor.resting_floor
+    current_floor = prev_resting_floor.resting_floor
     elevator_event = Elevator(
-        prev_resting_floor=floor,
+        prev_resting_floor=current_floor,
         whos_calling=from_floor,
         where_to=to_floor,
         resting_floor=Elevator.resting_floor_logic(where_to=to_floor),

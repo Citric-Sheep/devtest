@@ -49,18 +49,35 @@ Below is a list of some things from previous submissions that haven't worked out
 - Overcomplicated the system mentally and failed to start
 
 
+---
+## Installation
+Ideally I would have a docker container to configure the following steps, and directly run the FastAPI API. 
 
-# Comentarios
+1. For now, you will need to have mysql installed and running. You will need to create the user and schema:
+    ```mysql 
+    CREATE USER 'citric-sheep'@'localhost' IDENTIFIED BY 'citricSheep';
+    GRANT CREATE, ALTER, DROP, INSERT, UPDATE, INDEX, DELETE, SELECT, REFERENCES  on devtest.*  TO 'citric-sheep'@'localhost';
+    ```
 
-* Por ahora, para que funcione requiere mysql. Hay que crear el usuario y el schema:
-```mysql 
-CREATE USER 'citric-sheep'@'localhost' IDENTIFIED BY 'citricSheep';
-GRANT CREATE, ALTER, DROP, INSERT, UPDATE, INDEX, DELETE, SELECT, REFERENCES  on devtest.*  TO 'citric-sheep'@'localhost';
-```
-Idealmente para evitar esto haría un contenedor en Docker.
+2. Set the python venv:
 
-* También hay que crear las tablas de las bases de datos:
+    ```bash
+    python3 -m pip install -r requirements.txt
+    source .venv/bin/activate
+    ```
 
-```python
-python3 services.py
-```
+3. You should run the following to create the tables in the database:
+
+    ```python
+    python3 services.py
+    ```
+
+4. Finally, launch the web server:
+    ```bash
+    uvicorn main:app
+    ```
+
+## Notes
+- Only for this devtest I put the credentials.py in the repository. I am aware of the security implications of this. In a real case scenario I would create a configuration file, with every configuration option as a variable. In this case, just needed the credentials so I didn't bother. 
+- The 'elevator' table cointains the registry of the elevator calls. The 'elevator' table is initialized starting at floor 0. 
+- The elevator can't rest in the 13th floor; it's bad luck. 
