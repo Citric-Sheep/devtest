@@ -19,6 +19,7 @@ This project models an elevator system and collects data that can be used to bui
         export FLASK_ENV=development
     
     Run the Flask application
+        flask run
         The application will be running at http://127.0.0.1:5000.
 
 
