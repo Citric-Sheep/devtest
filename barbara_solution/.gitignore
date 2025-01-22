@@ -1,0 +1,9 @@
+# Ignore Python cache directories
+__pycache__/
+*.py[cod]
+
+# Ignore Flask instance folder (if you're storing config or DB there)
+instance/
+
+# Ignore virtual environment folder
+.venv/
