@@ -14,3 +14,10 @@ class Demand(db.Model):
     floor_number = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
     elevator_id = db.Column(db.Integer, db.ForeignKey('elevator.elevator_id'))
+
+
+class ElevatorHistory(db.Model):
+    history_id = db.Column(db.Integer, primary_key=True)
+    elevator_id = db.Column(db.Integer, db.ForeignKey('elevator.elevator_id'), nullable=False)
+    resting_floor = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False)
