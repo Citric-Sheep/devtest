@@ -1,11 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from config import Config
 from app.routes import endpoints
-
-db = SQLAlchemy()
-migrate = Migrate()
+from app.database import db, migrate
 
 def create_app(config_class=Config):
     app = Flask(__name__)

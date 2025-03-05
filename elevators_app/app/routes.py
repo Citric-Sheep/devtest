@@ -9,7 +9,7 @@ endpoints = Blueprint('main', __name__)
 def call_elevator():
     data = request.get_json()
     new_demand = Demand(
-        floor = data.get('floor'),
+        floor_number = data.get('floor'),
         timestamp = datetime.fromisoformat(data['timestamp']), # TODO Update later to datetime.now
         elevator_id = data.get('elevator_id')
     )
@@ -54,3 +54,15 @@ def get_elevator_history():
         'resting_floor': floor.resting_floor,
         'timestamp': floor.timestamp.isoformat()
     } for floor in resting_floors]), 200
+
+
+@endpoints.route('/elevator/teste', methods=['GET'])
+def get_teste():
+    new_demand = Demand(
+        floor_number = 999,
+        timestamp = datetime.now,
+        elevator_id = 1
+    )
+    db.session.add(new_demand)
+    db.session.commit()
+    return jsonify({"msg":"TESTE"}), 200
