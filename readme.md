@@ -1,58 +1,32 @@
-# Dev Test
+# Elevator resting floor prediction model solution
 
-## Elevators
-When an elevator is empty and not moving this is known as it's resting floor. 
-The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
+## Problem statement:
+### From my understanding were trying to predict the best possible floor the elevator should rest on according to certain factors such as time of day, week, month, season, etc in order to anticipate which floor demand will possibly come from next so we can provide the best possible and efficient service for users in that particular building
 
-We can build a prediction engine to predict the likely next floor based on historical demand, if we have the data.
-
-The goal of this project is to model an elevator and save the data that could later be used to build a prediction engine for which floor is the best resting floor at any time
-- When people call an elevator this is considered a demand
-- When the elevator is vacant and not moving between floors, the current floor is considered its resting floor
-- When the elevator is vacant, it can stay at the current position or move to a different floor
-- The prediction model will determine what is the best floor to rest on
+## Prediction target:
+### In order to not only predict the next possible floor at a particular time but provide probabilitiies for all floors at a particular time, i would go for a mutliclass outcome, i think this would allow the elevator to be adjusted to a certain level of accuracy as desired by users
 
 
-_The requirement isn't to complete this system but to start building a system that would feed into the training and prediction
-of an ML system_
+## What factors  could possibly influence the demand of the elevator (both obvious and non obvious)
+- ### Time of day:
+  #### We might find that there is a higher demand on certain floors in the mornings, lunch or evenings, e,g a working building where people need the elevator closer to ground floors as people come into work and closer to certain floors as people leave  work or go out for lunch
 
-You will need to talk through your approach, how you modelled the data and why you thought that data was important, provide endpoints to collect the data and 
-a means to store the data. Testing is important and will be used verify your system
-
-## A note on AI generated code
-This project isn't about writing code, AI can and will do that for you.
-The next step in this process is to talk through your solution and the decisions you made to come to them. It makes for an awkward and rather boring interview reviewing chatgpt's solution.
-
-If you use a tool to help you write code, that's fine, but we want to see _your_ thought process.
-
-Provided under the chatgpt folder is the response you get back from chat4o. 
-If your intention isn't to complete the project but to get an AI to spec it for you please, feel free to submit this instead of wasting OpenAI's server resources.
+- ### Day of the week
+  #### We might find that more people come into work on monday mornings as compared to friday, if the building is multipurpose, certain floors might have  working people coming in while other days house residents and thus less activity on certain floors 
+- ### Week of the month 
+  #### We might discover that certain weeks of the month have more people/traffic as compared to other weeks, e.g retreats, field work weeks, etc
+- ### Maintainance schedule that week (if any)
+  #### This is one of those non obvious factors, we might discover that an elevator that is not regularly maintained is less trusted by users and so they decide maybe to take the stairs, only users that need to travel safer distances might prefer it, e.g  a floor above the ground floor, this would also help avoid overfitting and help our model generalize better
+- ### Current weather season
+- #### We might find that during winter, christmas or summer, users might not prefer the elevator, or certain floors experience more demand
 
 
-## Problem statement recap
-This is a domain modeling problem to build a fit for purpose data storage with a focus on ai data ingestion
-- Model the problem into a storage schema (SQL DB schema or whatever you prefer)
-- CRUD some data
-- Add some flair with a business rule or two
-- Have the data in a suitable format to feed to a prediction training algorithm
-
----
-
-#### To start
-- Fork this repo and begin from there
-- For your submission, PR into the main repo. We will review it, a offer any feedback and give you a pass / fail if it passes PR
-- Don't spend more than 4 hours on this. Projects that pass PR are paid at the standard hourly rate
-
-#### Marking
-- You will be marked on how well your tests cover the code and how useful they would be in a prod system
-- You will need to provide storage of some sort. This could be as simple as a sqlite or as complicated as a docker container with a migrations file
-- Solutions will be marked against the position you are applying for, a Snr Dev will be expected to have a nearly complete solution and to have thought out the domain and built a schema to fit any issues that could arise 
-A Jr. dev will be expected to provide a basic design and understand how ML systems like to ingest data
+### Data access 
+#### Next i need to understand what historical data can actually be collected and fed into our system during training  as well as the kind of data that the system will have access to during actual live prediction
+#### Data such as time of day, day of week, week of month, maintainance schedule and current weather season are available natively to our system and can be enhanced  by installing addidtional packages.
 
 
-#### Trip-ups from the past
-Below is a list of some things from previous submissions that haven't worked out
-- Built a prediction engine
-- Built a full website with bells and whistles
-- Spent more than the time allowed (you won't get bonus points for creating an intricate solution, we want a fit for purpose solution)
-- Overcomplicated the system mentally and failed to start
+
+
+
+
