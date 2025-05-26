@@ -8,7 +8,6 @@ import json
 
 app = Flask(__name__)
 
-# Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///elevator_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'dev-secret-key'
@@ -41,7 +40,6 @@ class Elevator(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     calls = db.relationship('ElevatorCall', backref='elevator', lazy=True)
-    movements = db.relationship('ElevatorMovement', backref='elevator', lazy=True)
 
 class ElevatorCall(db.Model):
     __tablename__ = 'elevator_calls'
@@ -80,40 +78,30 @@ class ElevatorCall(db.Model):
         else:
             return 'autumn'
 
-class ElevatorMovement(db.Model):
-    __tablename__ = 'elevator_movements'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    elevator_id = db.Column(db.Integer, db.ForeignKey('elevators.id'), nullable=False)
-    from_floor = db.Column(db.Integer, nullable=False)
-    to_floor = db.Column(db.Integer, nullable=False)
-    movement_start = db.Column(db.DateTime, default=datetime.utcnow)
-    movement_end = db.Column(db.DateTime)
-    movement_type = db.Column(db.String(20)) 
-    load_before = db.Column(db.Integer, default=0)
-    load_after = db.Column(db.Integer, default=0)
-
-class FloorDemandSummary(db.Model):
-    __tablename__ = 'floor_demand_summary'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    building_id = db.Column(db.Integer, db.ForeignKey('buildings.id'), nullable=False)
-    floor_number = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    hour = db.Column(db.Integer, nullable=False)
-    call_count = db.Column(db.Integer, default=0)
-    avg_response_time = db.Column(db.Float)
-    peak_load_time = db.Column(db.Time)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 class ElevatorBusinessRules:
     @staticmethod
     def validate_floor_range(floor: int, building_id: int) -> bool:
+        """Validate if a floor number is valid for a given building."""
         building = Building.query.get(building_id)
         if not building:
             return False
         return 1 <= floor <= building.total_floors
-    
+
+    @staticmethod
+    def can_elevator_access_floor(elevator_id: int, floor: int) -> bool:
+        """Check if an elevator can access a specific floor."""
+        elevator = Elevator.query.get(elevator_id)
+        if not elevator:
+            return False
+        
+        if not ElevatorBusinessRules.validate_floor_range(floor, elevator.building_id):
+            return False
+        
+        if elevator.elevator_number == "FREIGHT" and floor > 5:
+            return False
+        
+        return True
+
     @staticmethod
     def calculate_response_time(call_time: datetime, elevator_position: int, called_floor: int) -> float:
         floors_to_travel = abs(elevator_position - called_floor)
@@ -156,7 +144,6 @@ def create_building():
 @app.route('/api/buildings/<int:building_id>/elevators', methods=['POST'])
 def create_elevator(building_id):
     """Add an elevator to a building"""
-    building = Building.query.get_or_404(building_id)
     data = request.get_json()
     
     if not data or 'elevator_number' not in data:
@@ -184,7 +171,7 @@ def create_elevator(building_id):
 
 @app.route('/api/elevators/<int:elevator_id>/call', methods=['POST'])
 def record_elevator_call(elevator_id):
-    """Record an elevator call (demand event)"""
+    """Record an elevator call """
     elevator = Elevator.query.get_or_404(elevator_id)
     data = request.get_json()
     
@@ -193,11 +180,9 @@ def record_elevator_call(elevator_id):
     
     called_from_floor = data['called_from_floor']
     
-    # Business rule validation
     if not ElevatorBusinessRules.validate_floor_range(called_from_floor, elevator.building_id):
         return jsonify({'error': 'Invalid floor number'}), 400
     
-    # Calculate response time
     response_time = ElevatorBusinessRules.calculate_response_time(
         datetime.utcnow(), elevator.current_floor, called_from_floor
     )
@@ -217,7 +202,6 @@ def record_elevator_call(elevator_id):
         db.session.add(call)
         db.session.commit()
         
-        # Update elevator position if destination provided
         if data.get('destination_floor'):
             elevator.current_floor = data['destination_floor']
             elevator.is_moving = False
@@ -238,55 +222,11 @@ def record_elevator_call(elevator_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/elevators/<int:elevator_id>/move', methods=['POST'])
-def record_elevator_movement(elevator_id):
-    """Record elevator movement (repositioning)"""
-    elevator = Elevator.query.get_or_404(elevator_id)
-    data = request.get_json()
-    
-    if not data or 'to_floor' not in data:
-        return jsonify({'error': 'Missing required field: to_floor'}), 400
-    
-    to_floor = data['to_floor']
-    
-    if not ElevatorBusinessRules.validate_floor_range(to_floor, elevator.building_id):
-        return jsonify({'error': 'Invalid floor number'}), 400
-    
-    movement = ElevatorMovement(
-        elevator_id=elevator_id,
-        from_floor=elevator.current_floor,
-        to_floor=to_floor,
-        movement_type=data.get('movement_type', 'repositioning'),
-        load_before=elevator.current_load,
-        load_after=data.get('load_after', elevator.current_load)
-    )
-    
-    try:
-        db.session.add(movement)
-        
-        # Update elevator state
-        elevator.current_floor = to_floor
-        elevator.current_load = data.get('load_after', elevator.current_load)
-        elevator.is_moving = False
-        
-        db.session.commit()
-        
-        return jsonify({
-            'movement_id': movement.id,
-            'from_floor': movement.from_floor,
-            'to_floor': movement.to_floor,
-            'elevator_current_floor': elevator.current_floor
-        }), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
-
 @app.route('/api/elevators/<int:elevator_id>/status', methods=['GET'])
 def get_elevator_status(elevator_id):
     """Get current elevator status"""
     elevator = Elevator.query.get_or_404(elevator_id)
     
-    # Check maintenance status
     maintenance_alert = ElevatorBusinessRules.should_trigger_maintenance_alert(elevator)
     
     return jsonify({
@@ -353,41 +293,6 @@ def get_ml_features(building_id):
         'features': features
     })
 
-@app.route('/api/analytics/demand-patterns/<int:building_id>', methods=['GET'])
-def get_demand_patterns(building_id):
-    """Get demand patterns for analysis"""
-    building = Building.query.get_or_404(building_id)
-    
-    demand_query = db.session.query(
-        ElevatorCall.called_from_floor,
-        ElevatorCall.hour_of_day,
-        ElevatorCall.day_of_week,
-        db.func.count(ElevatorCall.id).label('call_count'),
-        db.func.avg(ElevatorCall.response_time).label('avg_response_time')
-    ).join(Elevator).filter(
-        Elevator.building_id == building_id
-    ).group_by(
-        ElevatorCall.called_from_floor,
-        ElevatorCall.hour_of_day,
-        ElevatorCall.day_of_week
-    ).all()
-    
-    patterns = []
-    for row in demand_query:
-        patterns.append({
-            'floor': row.called_from_floor,
-            'hour': row.hour_of_day,
-            'day_of_week': row.day_of_week,
-            'call_count': row.call_count,
-            'avg_response_time': round(row.avg_response_time, 2) if row.avg_response_time else None
-        })
-    
-    return jsonify({
-        'building_id': building_id,
-        'demand_patterns': patterns
-    })
-
-# Health check endpoint
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({
