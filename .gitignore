@@ -27,6 +27,9 @@ env/
 venv/
 ENV/
 
+# Flask instance folder
+instance/
+
 # IDE
 .idea/
 .vscode/
@@ -43,4 +46,3 @@ Thumbs.db
 # Database
 *.sqlite3
 *.db
-
