@@ -1,6 +1,6 @@
 
 # MY THOUGHT PROCESS
-### Whenever im faced with an AI modeling problem, i often love to revert to the fundamentals of developing models then expand from there, i have found this to be a good way to approach problems in a methodical and structured way, because anything that can be broken down into a process can be meausred and anything that can be measured can be improved, this i believe is the very heart of artifiicial intelligence
+### Whenever im faced with an AI modeling problem, i often love to revert to the fundamentals of developing models then expand from there, i have found this to be a good way to approach problems in a methodical and structured way, because anything that can be broken down into a process can be measured and anything that can be measured can be improved, this i believe is the very heart of artifiicial intelligence
 
 ### My methodical steps are as follows:
 
@@ -8,7 +8,7 @@
 
 ### 2. Identify the prediction target or goal
 
-### 3. Identify the available data that we have access to
+### 3. Identify the type of available data that we have access to
 
 ### 4. Identify obvious and non-obvious factors that could influence the prediction target
 
@@ -16,7 +16,7 @@
 
 ### 6. Prepare the data for training and testing 
 
-### 7. Evaluate the models performance and based on results decide whether to iterate and improve training data or use a different approach and model entirely and keep iterating and benchmarking, understanding trade offs and benefits between approaches
+### 7. Evaluate the models performance and based on results and decide whether to iterate and improve training data or use a different approach and model entirely and keep iterating and benchmarking, understanding trade offs and benefits between approaches
 
 
 
