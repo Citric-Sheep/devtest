@@ -2,9 +2,9 @@ name: Python Tests
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ master, macphail_devtest ] 
   push:
-    branches: [ master ]
+    branches: [ master, macphail_devtest ]
 
 jobs:
   test:
