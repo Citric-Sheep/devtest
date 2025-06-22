@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: devsaieh
       POSTGRES_PASSWORD: saiehpass
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
   web:
@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://devuser:devpass@db:5432/devtest_db
+      DATABASE_URL: postgresql://devsaieh:saiehpass@db:5432/devtest_db
       ENV: development
 
 volumes:
