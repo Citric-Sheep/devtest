@@ -20,7 +20,6 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 # IMPORTA Base desde donde defines tus modelos
 from app.db.models import Base  
-# LÍNEA CLAVE:
 target_metadata = Base.metadata
 
 
