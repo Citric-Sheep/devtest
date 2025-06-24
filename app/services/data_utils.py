@@ -1,9 +1,3 @@
-"""
-Funciones utilitarias para poblar la base de datos con datos artificiales realistas.
-Se usan en scripts de testeo y generación de datos para ML.
-Decidí crear estos helpers para no repetir lógica de negocio ni validar manualmente cada campo.
-"""
-
 from app.db.models import Demand, RestingPeriod
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -25,7 +19,7 @@ def create_resting_period(db: Session, elevator_id: int, floor: int, resting_sta
     db.refresh(rp)
     return rp
 
-def create_demand(db: Session, elevator_id: int, floor: int, timestamp_called: datetime):
+def create_demand(db: Session, elevator_id: int, destination_floor: int, floor: int, timestamp_called: datetime):
     """
     Crea y guarda una demanda (llamada de ascensor).
     Esta función podría ampliarse en el futuro para cerrar resting_periods automáticamente.
@@ -33,12 +27,10 @@ def create_demand(db: Session, elevator_id: int, floor: int, timestamp_called: d
     d = Demand(
         elevator_id=elevator_id,
         floor=floor,
+        destination_floor=destination_floor,
         timestamp_called=timestamp_called,
     )
     db.add(d)
     db.commit()
     db.refresh(d)
     return d
-
-# NOTA: Si cambian las reglas de negocio, agrega aquí validaciones globales.
-# Ejemplo: rango de pisos, horarios restringidos, etc.
