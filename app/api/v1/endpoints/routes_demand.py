@@ -31,6 +31,11 @@ def create_demand(demand: DemandCreate, db: Session = Depends(get_db)):
             status_code=400,
             detail=f"El piso destino debe estar entre {MIN_FLOOR} y {MAX_FLOOR}."
         )
+    if demand.floor < MIN_FLOOR or demand.floor > MAX_FLOOR:
+        raise HTTPException(
+            status_code=400,
+            detail=f"El piso debe estar entre {MIN_FLOOR} y {MAX_FLOOR}."
+        )
 
     # Al registrar una demanda, cerramos automáticamente el resting actual (idle) si existe.
     last_resting = db.query(RestingPeriod).filter(
