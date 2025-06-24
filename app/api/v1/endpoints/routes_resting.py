@@ -5,7 +5,6 @@ Incluye validaciones realistas de dominio:
 - El piso debe estar dentro del rango permitido.
 - El periodo de descanso no puede finalizar antes de iniciar.
 
-Decisión: Mantener los datos limpios facilita el futuro análisis y entrenamiento de modelos ML.
 """
 
 from fastapi import APIRouter, Depends, HTTPException
