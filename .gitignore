@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+
+docker-compose.override.yml
+
+pgdata/
+
+alembic/versions/
