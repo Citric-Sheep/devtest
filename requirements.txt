@@ -10,3 +10,5 @@ requests
 python-dotenv
 psycopg2-binary
 httpx
+numpy
+joblb
