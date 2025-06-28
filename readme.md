@@ -56,3 +56,38 @@ Below is a list of some things from previous submissions that haven't worked out
 - Built a full website with bells and whistles
 - Spent more than the time allowed (you won't get bonus points for creating an intricate solution, we want a fit for purpose solution)
 - Overcomplicated the system mentally and failed to start
+
+
+## Answer
+
+### Data Structure and Modeling
+
+Three main tables are defined in the relational database:  
+ - `Elevator`: Represents a single elevator. This enables the system to scale to multiple elevators, each with its own state and demand events.  
+ - `ElevatorDemand` : Logs every time an elevator is requested from a floor. It includes a `timestamp`, `floor`, and `elevator_id`.  
+ - `ElevatorState`: Periodically logs the current state of an elevator (e.g., current floor and whether it's vacancy). Useful for operational tracking, this table is not directly involved in demand prediction.  
+
+ ### Key Assumptions
+
+
+1. Demand is Independent of Elevator State:  
+
+ - Users do not know the elevator's position when they request it.  
+
+ - Therefore, demand is modeled as an external event driven by time patterns, not internal elevator logic.  
+
+2. Time-Based Demand Prediction:  
+
+ - The ML model aims to predict the floor from which the next request will likely occur, using features such as:  
+
+        - Time of day  
+        - Day of the week  
+        - Whether it is a holiday (is_holiday)  
+        - Whether it is a weekend (is_weekend)  
+
+ - The elevator's current location is not used in the prediction.  
+
+3. Proactive Elevator Movement (future feature):  
+
+    If an elevator remains idle for a defined period, it could use the ML model to proactively move to the floor most likely to generate a request.  
+
