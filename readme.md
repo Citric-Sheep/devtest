@@ -1,5 +1,26 @@
 # Dev Test
 
+## RUN APP
+Instruction to run application
+
+### Create the virtual environment
+python -m venv test_dev
+
+### Activate the virtual environment
+source test_dev/bin/activate (Linux)
+
+### Install packages
+pip install -r requirements.txt
+
+### Start the API server
+uvicorn app.main:app --reload
+
+### Run tests
+pytest tests/test_endpoints.py
+
+### Explanation
+The file explanation.md has the explanation about the solution.
+
 ## Elevators
 When an elevator is empty and not moving this is known as it's resting floor. 
 The ideal resting floor to be positioned on depends on the likely next floor that the elevator will be called from.
