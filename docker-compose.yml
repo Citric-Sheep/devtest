@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: elevator-api
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./:/app:delegated
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/elevator_db
+    depends_on:
+      - db
+    networks:
+      - elevator-network
+    restart: always
+
+  db:
+    image: postgres:13
+    container_name: elevator-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=elevator_db
+    ports:
+      - "5432:5432"
+    networks:
+      - elevator-network
+    restart: always
+
+volumes:
+  postgres_data:
+
+networks:
+  elevator-network:
+    driver: bridge
